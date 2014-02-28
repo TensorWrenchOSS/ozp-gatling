@@ -28,6 +28,11 @@ class MarketplaceScenario extends Simulation {
 			.body(RawFileBody("create_service_item.json"))
 			.basicAuth("""testAdmin1""","""password"""))
 
-	setUp(scn.inject(
-    rampRate(1 usersPerSec) to (300 usersPerSec) during(5 minutes))).protocols(httpProtocol)
+//	setUp(scn.inject(
+//    rampRate(1 usersPerSec) to (300 usersPerSec) during(5 minutes)))
+//      .protocols(httpProtocol)
+//      .assertions(global.responseTime.max.lessThan(4000))
+  setUp(scn.inject(1 usersPerSec) during(3 minutes)))
+      .protocols(httpProtocol)
+      .assertions(global.responseTime.max.lessThan(4000))
 }
