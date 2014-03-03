@@ -1,0 +1,51 @@
+{
+    "id": 33,
+    "state": {
+        "id": 1
+    },
+    "owners": [
+        {
+            "id": 2
+        }
+    ],
+    "techPocs": ["Test Administrator 1"],
+    "organization": "DEFAULT_STORE_NAME",
+    "opensInNewBrowserTab": false,
+    "docUrls": [],
+    "screenshots": [],
+    "contacts": [],
+    "owfProperties": {
+        "singleton": false,
+        "visibleInLaunch": true,
+        "background": false,
+        "size": "MEDIUM",
+        "intents":[]
+    },
+    "title": "test",
+    "types": {
+        "id": 1
+    },
+    "versionName": "",
+    "releaseDate": "",
+    "description": "",
+    "categories": [],
+    "customFields": [
+        {
+            "class": "marketplace.DropDownCustomField",
+            "customFieldDefinition": {"id": "1"},
+            "fieldValueList": []
+        }
+    ],
+    "installUrl": "",
+    "imageSmallUrl": "",
+    "imageLargeUrl": "",
+    "launchUrl": "https://",
+    "requirements": "",
+    "dependencies": "",
+    "relationships": [
+        {
+            "relationshipType": "REQUIRE",
+            "relatedItems": []
+        }
+    ]
+}

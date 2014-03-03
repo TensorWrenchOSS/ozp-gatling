@@ -1,0 +1,18 @@
+package org.ozoneplatform.gatling.feeder
+
+class FeederUtils {
+
+    public final static String DICTIONARY_FILE_PATH = '/usr/share/dict/words'
+    public final static String CORPUS_FILE_PATH = 'lotsatext.txt'
+
+    public static String getBaseUrl() {
+        String baseUrl = System.properties.getProperty('baseUrl') ?: 'https://localhost:8443/marketplace/'
+        baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'
+    }
+
+    public static String[] getDictionaryWords() { new File(DICTIONARY_FILE_PATH).readLines() as String[] }
+
+    public static String getTextCorpus() { new File(CORPUS_FILE_PATH).withReader { it.getText().replaceAll("[^\\x00-\\x7F]", "").replaceAll("[^\\p{L}\\p{Nd}]", " ") } }
+
+    public static String getStoreItemsAsJsonString() { ["curl", "-XGET", baseUrl + "api/serviceItem"].execute().text }
+}
