@@ -9,9 +9,9 @@ import org.ozoneplatform.gatling.builder.ServiceItemBuilder
 
 class MarketplaceScenario extends Simulation {
   val baseURL = FeederUtils.getBaseUrl
-  val dictionary: Array[String] = FeederUtils.getDictionaryWords
-  val corpus: String = FeederUtils.getTextCorpus
-  val storeItems: String = FeederUtils.getStoreItemsAsJsonString
+  val dictionary = FeederUtils.getDictionaryWords
+  val corpus = FeederUtils.getTextCorpus
+  val storeItems = FeederUtils.getStoreItemsAsJsonString
   val adminCount = FeederUtils.getAdminCount
 
   val httpProtocol = http

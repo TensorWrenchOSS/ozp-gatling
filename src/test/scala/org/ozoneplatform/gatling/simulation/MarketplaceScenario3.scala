@@ -10,6 +10,7 @@ import assertions._
 
 class MarketplaceScenario3 extends Simulation {
   val baseURL = FeederUtils.getBaseUrl
+  val adminCount = FeederUtils.getAdminCount
 
 	val httpProtocol = http
 		.baseURL(baseURL)
