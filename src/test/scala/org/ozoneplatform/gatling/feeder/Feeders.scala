@@ -36,7 +36,7 @@ object Feeders {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("itemTag" -> randWords(words))
+      override def next(): Map[String, String] = Map("itemTag" -> randWord(words))
     }
   }
 

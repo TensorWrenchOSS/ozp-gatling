@@ -34,8 +34,8 @@ class MarketplaceScenario4 extends Simulation {
     .exec(http("tag the service item")
       .post("api/serviceItem/" + "${editedItemId}" + "/tag")
       .headers(create_item_headers)
-      .basicAuth("{$adminUser}","""password"""))
-      .body("{\"title\": \"" +  "{$itemTag}" + "\"}")
+      .basicAuth("{$adminUser}","""password""")
+      .body(StringBody("{\"title\": \"" +  "{$itemTag}" + "\"}")))
 
   setUp(scn.inject(ramp(10 users) over (10 seconds))).protocols(httpProtocol)
 }
