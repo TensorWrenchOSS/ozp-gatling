@@ -24,6 +24,7 @@ class MarketplaceScenario2 extends Simulation {
   val scn = scenario("Marketplace Scenario 2")
     .feed(Feeders.itemDescription(corpus))
     .feed(Feeders.itemJson(storeItems))
+    .feed(Feeders.adminUser(adminCount))
     .exec((session: Session) => {
       val item = session("itemJson").as[JsObject]
       val itemId = (item \ "id").as[Long]
@@ -34,7 +35,7 @@ class MarketplaceScenario2 extends Simulation {
       .put("api/serviceItem/" + "${editedItemId}")
       .headers(create_item_headers)
       .body(StringBody("${editedItem}"))
-      .basicAuth("""testAdmin1""","""password"""))
+      .basicAuth("{$adminUser}","""password"""))
 
   setUp(scn.inject(ramp(10 users) over (10 seconds))).protocols(httpProtocol)
 }

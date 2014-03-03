@@ -1,34 +1,30 @@
+package org.ozoneplatform.gatling.simulation
 
 import io.gatling.core.Predef._
-import io.gatling.core.session.Expression
 import io.gatling.http.Predef._
-import io.gatling.jdbc.Predef._
-import io.gatling.http.Headers.Names._
-import io.gatling.http.Headers.Values._
 import scala.concurrent.duration._
-import bootstrap._
-import assertions._
+import org.ozoneplatform.gatling.feeder.Feeders
+import org.ozoneplatform.gatling.feeder.FeederUtils
+import org.ozoneplatform.gatling.feeder.ServiceItemBuilder
 
-class MarketplaceScenario extends Simulation {
+class MarketplaceScenario3 extends Simulation {
   val baseURL = FeederUtils.getBaseUrl
 
 	val httpProtocol = http
 		.baseURL(baseURL)
 		.acceptHeader("application/json")
-		.acceptEncodingHeader("gzip,deflate,sdch")
-		.acceptLanguageHeader("en-US,en;q=0.8")
-		.authorizationHeader("Basic dGVzdEFkbWluMTpwYXNzd29yZA==")
 
 	val create_item_headers = Map(
 		"""Content-Type""" -> """application/json""")
 
 	val scn = scenario("Marketplace Scenario")
+    .feed(Feeders.adminUser(adminCount))
 		.exec(
       http("create service item")
 			.post("""/marketplace/api/serviceItem""")
 			.headers(create_item_headers)
 			.body(RawFileBody("create_service_item.json"))
-			.basicAuth("""testAdmin1""","""password""")
+			.basicAuth("${adminUser}","""password""")
     )
     .exec(
       http("group api")
