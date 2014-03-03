@@ -10,6 +10,10 @@ class FeederUtils {
         baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'
     }
 
+    public static Integer getAdminCount() { (System.properties.getProperty('adminCount') ?: '1') as Integer}
+
+    public static Integer getUserCount() { (System.properties.getProperty('userCount') ?: '1') as Integer}
+
     public static String[] getDictionaryWords() { new File(DICTIONARY_FILE_PATH).readLines() as String[] }
 
     public static String getTextCorpus() { new File(CORPUS_FILE_PATH).withReader { it.getText().replaceAll("[^\\x00-\\x7F]", "").replaceAll("[^\\p{L}\\p{Nd}]", " ") } }

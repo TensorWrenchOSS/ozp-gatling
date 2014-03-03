@@ -12,6 +12,7 @@ class MarketplaceScenario extends Simulation {
   val dictionary: Array[String] = FeederUtils.getDictionaryWords
   val corpus: String = FeederUtils.getTextCorpus
   val storeItems: String = FeederUtils.getStoreItemsAsJsonString
+  val adminCount = FeederUtils.getAdminCount
 
   val httpProtocol = http
     .baseURL(baseURL)
@@ -22,6 +23,7 @@ class MarketplaceScenario extends Simulation {
   val scn = scenario("Marketplace Scenario")
     .feed(Feeders.itemTitle(dictionary))
     .feed(Feeders.itemDescription(corpus))
+    .feed(Feeders.adminUser(adminCount))
     .exec(http("create service item")
       .post("""api/serviceItem""")
       .headers(create_item_headers)
@@ -29,7 +31,7 @@ class MarketplaceScenario extends Simulation {
                            .title("${itemTitle}")
                            .description("${itemDescription}")
                            .toString()))
-      .basicAuth("""testAdmin1""","""password"""))
+      .basicAuth("${adminUser}","""password"""))
 
   setUp(scn.inject(ramp(10 users) over (10 seconds))).protocols(httpProtocol)
 }

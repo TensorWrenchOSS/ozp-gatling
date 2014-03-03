@@ -51,4 +51,20 @@ object Feeders {
       }
     }
   }
+
+  def adminUser(adminCount: Int) : Feeder[String] = {
+    new Feeder[String] {
+      override def hasNext = true
+
+      override def next(): Map[String, String] = Map("adminUser" -> ("testAdmin" + randInt(1, adminCount).toString))
+    }
+  }
+
+  def user(userCount: Int) : Feeder[String] = {
+    new Feeder[String] {
+      override def hasNext = true
+
+      override def next(): Map[String, String] = Map("user" -> ("testUser" + randInt(1, userCount).toString))
+    }
+  }
 }
