@@ -5,7 +5,8 @@ import io.gatling.http.Predef._
 import scala.concurrent.duration._
 import org.ozoneplatform.gatling.feeder.Feeders
 import org.ozoneplatform.gatling.feeder.FeederUtils
-import org.ozoneplatform.gatling.feeder.ServiceItemBuilder
+import bootstrap._
+import assertions._
 
 class MarketplaceScenario3 extends Simulation {
   val baseURL = FeederUtils.getBaseUrl

@@ -22,6 +22,8 @@ object Feeders {
     text.slice(start, start + size)
   }
 
+  private def userNumber(count: Integer): String = if (count == 1) "1" else randInt(1, count).toString
+
   def itemTitle(words: Array[String]): Feeder[String] = {
     new Feeder[String] {
       override def hasNext = true
@@ -56,7 +58,7 @@ object Feeders {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("adminUser" -> ("testAdmin" + randInt(1, adminCount).toString))
+      override def next(): Map[String, String] = Map("adminUser" -> ("testAdmin" + userNumber(adminCount)))
     }
   }
 
@@ -64,7 +66,7 @@ object Feeders {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("user" -> ("testUser" + randInt(1, userCount).toString))
+      override def next(): Map[String, String] = Map("user" -> ("testUser" + userNumber(userCount)))
     }
   }
 }
