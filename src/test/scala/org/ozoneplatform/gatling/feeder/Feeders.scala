@@ -3,26 +3,36 @@ package org.ozoneplatform.gatling.feeder
 import io.gatling.core.Predef._
 import scala.util.Random
 import play.api.libs.json.{Json, JsObject}
+import scala.collection.immutable.List
 
 object Feeders {
 
   private val RNG = new Random
 
-  private def randInt(a:Int, b:Int) = RNG.nextInt((b + 1) - a) + a
+  def randInt(a:Int, b:Int) = RNG.nextInt((b + 1) - a) + a
 
-  private def randWord(words: Array[String]): String = words(randInt(0, words.size - 1))
+  def randWord(words: Array[String]): String = words(randInt(0, words.size - 1))
 
-  private def randWords(words: Array[String], count: Int, acc: String = ""): String =
+  def randWords(words: Array[String], count: Int, acc: String = ""): String =
     if (count < 0) acc
     else if (acc.size > 0) randWords(words, count - 1, randWord(words) + " " + acc)
     else randWords(words, count - 1, randWord(words))
 
-  private def randomString(text: String, size: Int): String = {
+  def randWordList(words: Array[String], count: Int, acc: List[String] = List[String]()): List[String] = {
+    if (acc.size == count) acc
+    else {
+      val word = randWord(words)
+      if (acc.contains(word)) randWordList(words, count, acc)
+      else randWordList(words, count, acc ++ List[String](word))
+    }
+  }
+
+  def randomString(text: String, size: Int): String = {
     val start = randInt(0, text.size - (size + 1))
     text.slice(start, start + size)
   }
 
-  private def userNumber(count: Integer): String = if (count == 1) "1" else randInt(1, count).toString
+  def userNumber(count: Integer): String = if (count == 1) "1" else randInt(1, count).toString
 
   def itemTitle(words: Array[String]): Feeder[String] = {
     new Feeder[String] {
@@ -32,7 +42,9 @@ object Feeders {
     }
   }
 
-  def itemTag(words: Array[String]): Feeder[String] = {
+  def itemTag(words: Array[String], tagCount: Int): Feeder[String] = wordFeed(randWordList(words, tagCount) toArray)
+
+  def wordFeed(words: Array[String]): Feeder[String] = {
     new Feeder[String] {
       override def hasNext = true
 
@@ -75,6 +87,20 @@ object Feeders {
       override def hasNext = true
 
       override def next(): Map[String, String] = Map("user" -> ("testUser" + userNumber(userCount)))
+    }
+  }
+
+  def adminUserLoop(adminCount: Int): Feeder[String] = {
+    @volatile var counter = 1
+
+    new Feeder[String] {
+      override def hasNext = true
+
+      override def next(): Map[String, String] = {
+        counter += 0
+
+        Map("loopedAdminUser" -> ("testAdmin" + (counter % adminCount + 1).toString))
+      }
     }
   }
 }

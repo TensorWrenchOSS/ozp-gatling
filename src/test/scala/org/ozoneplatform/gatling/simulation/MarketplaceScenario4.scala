@@ -11,7 +11,7 @@ import play.api.libs.json.JsObject
 class MarketplaceScenario4 extends Simulation {
 
   val baseURL = FeederUtils.getBaseUrl
-  val dictionary = FeederUtils.getDictionaryWords
+  val dictionary = FeederUtils.getWordsDistro
   val storeItems = FeederUtils.getStoreItemsAsJsonString
   val adminCount = FeederUtils.getAdminCount
 
@@ -24,7 +24,7 @@ class MarketplaceScenario4 extends Simulation {
   val scn = scenario("create a tag")
     .feed(Feeders.itemJson(storeItems))
     .feed(Feeders.adminUser(adminCount))
-    .feed(Feeders.itemTag(dictionary))
+    .feed(Feeders.itemTag(dictionary, 20))
     .exec((session: Session) => {
       val item = session("itemJson").as[JsObject]
       val itemId = (item \ "id").as[Long]
