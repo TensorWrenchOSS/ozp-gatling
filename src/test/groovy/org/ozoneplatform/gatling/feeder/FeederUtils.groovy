@@ -2,7 +2,7 @@ package org.ozoneplatform.gatling.feeder
 
 class FeederUtils {
 
-    public final static String DICTIONARY_FILE_PATH = '/usr/share/dict/words'
+    public final static String DICTIONARY_FILE_PATH = 'dictionary.txt'
     public final static String CORPUS_FILE_PATH = 'lotsatext.txt'
 
     public static String getBaseUrl() {
@@ -16,7 +16,9 @@ class FeederUtils {
 
     public static String[] getDictionaryWords() { new File(DICTIONARY_FILE_PATH).readLines() as String[] }
 
-    public static String getTextCorpus() { new File(CORPUS_FILE_PATH).withReader { it.getText().replaceAll("[^\\x00-\\x7F]", "").replaceAll("[^\\p{L}\\p{Nd}]", " ") } }
+    public static String getTextCorpus() { new File(CORPUS_FILE_PATH).withReader { it.getText() }}
 
-    public static String getStoreItemsAsJsonString() { ["curl", "-XGET", baseUrl + "api/serviceItem"].execute().text }
+    public static String[] getWordsDistro() { textCorpus.split() }
+
+    public static String getStoreItemsAsJsonString() { ['curl', '-XGET', '-utestAdmin1:password', baseUrl + 'api/serviceItem'].execute().text }
 }

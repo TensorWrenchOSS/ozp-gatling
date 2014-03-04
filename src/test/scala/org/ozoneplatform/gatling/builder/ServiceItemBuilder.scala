@@ -13,6 +13,12 @@ class ServiceItemBuilder(jsonIn: JsObject) {
     ))
   }
 
+  def this(jsonString: String) {
+    this(
+      Json.parse(jsonString).as[JsObject]
+    )
+  }
+
   def title(title: String): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("title" -> title))
 
   def description(description: String): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("description" -> description))

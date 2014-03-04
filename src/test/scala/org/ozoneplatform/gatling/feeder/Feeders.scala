@@ -8,7 +8,7 @@ object Feeders {
 
   private val RNG = new Random
 
-  private def randInt(a:Int, b:Int) = RNG.nextInt(b-a) + a
+  private def randInt(a:Int, b:Int) = RNG.nextInt((b + 1) - a) + a
 
   private def randWord(words: Array[String]): String = words(randInt(0, words.size - 1))
 
