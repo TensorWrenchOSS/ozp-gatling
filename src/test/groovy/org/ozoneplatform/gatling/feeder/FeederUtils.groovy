@@ -18,6 +18,8 @@ class FeederUtils {
 
     public static Integer getTagCount() { (System.properties.getProperty('tagCount') ?: '1') as Integer }
 
+    public static Integer getRampPeriod() { (System.properties.getProperty('rampPeriod') ?: '1000') as Integer }
+
     public static Integer getScenarioUserCount() { (System.properties.getProperty('scenarioUserCount') ?: '1') as Integer }
 
     public static String[] getDictionaryWords() { new File(DICTIONARY_FILE_PATH).readLines() as String[] }

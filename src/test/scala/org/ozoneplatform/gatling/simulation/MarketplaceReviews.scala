@@ -10,6 +10,7 @@ class MarketplaceReviews extends Simulation {
   val adminCount = FeederUtils.getAdminCount
   val tagCount = FeederUtils.getTagCount
   val itemCount = FeederUtils.getItemCount
+  val rampPeriod = FeederUtils.getRampPeriod
 
   val initUsers = scenario("Initializing " + adminCount + " admin users.")
     .feed(Feeders.adminLoop(adminCount))
@@ -32,6 +33,6 @@ class MarketplaceReviews extends Simulation {
   setUp(
     initUsers.inject(ramp(adminCount.toInt users) over (adminCount.toInt seconds)),
     initServiceItems.inject(nothingFor(adminCount.toInt seconds), nothingFor(5 seconds), ramp(itemCount.toInt users) over (itemCount.toInt seconds)),
-    reviewARandomItem.inject(nothingFor(itemCount.toInt seconds), nothingFor(5 seconds), ramp(1 user) over (5 seconds), ramp(1000 users) over (1000 seconds))
+    reviewARandomItem.inject(nothingFor(itemCount.toInt seconds), nothingFor(5 seconds), ramp(1 user) over (5 seconds), ramp(1000 users) over (rampPeriod.toInt seconds))
   ).protocols(restHttpProtocol)
 }
