@@ -164,7 +164,6 @@ adjutant
 administer
 administration
 administrative
-administratively
 administrator
 admirable
 admirably
@@ -485,7 +484,6 @@ andrew
 android
 androscoggin
 anecdotal
-anesthesiologist
 anesthesiology
 anew
 angel
@@ -1947,8 +1945,6 @@ chaplain
 chapter
 character
 characteristic
-characteristically
-characterization
 characterize
 charade
 charge
@@ -1997,7 +1993,6 @@ cheesy
 cheetah
 chef
 chemical
-chemiluminescence
 chemistry
 chemotaxis
 chen
@@ -2282,7 +2277,6 @@ collected
 collection
 collective
 collectively
-collectivization
 collectivize
 collector
 college
@@ -2563,7 +2557,6 @@ consonant
 conspicuous
 conspiracy
 conspirator
-conspiratorially
 constant
 constantine
 constantly
@@ -2572,7 +2565,6 @@ consternation
 constitute
 constitution
 constitutional
-constitutionality
 constrain
 constrained
 constraint
@@ -2597,7 +2589,6 @@ containment
 contemplate
 contemplation
 contemporaneous
-contemporaneously
 contemporary
 contempt
 contemptuous
@@ -2747,7 +2738,6 @@ countenance
 counter
 counteract
 counterbalance
-counterclockwise
 counterfeit
 counterpart
 counterpoint
@@ -3957,8 +3947,6 @@ electrical
 electrically
 electrician
 electricity
-electrocardiogram
-electrocardiographic
 electronic
 electronics
 electrophoresis
@@ -4135,7 +4123,6 @@ entertainment
 enthralling
 enthusiasm
 enthusiastic
-enthusiastically
 enticing
 entire
 entirely
@@ -4158,7 +4145,6 @@ envied
 envious
 environment
 environmental
-environmentalist
 environmentally
 envision
 envy
@@ -4463,7 +4449,6 @@ extraneous
 extraordinarily
 extraordinary
 extrapolate
-extraterrestrial
 extravagance
 extravagant
 extravaganza
@@ -5128,7 +5113,6 @@ gasket
 gasoline
 gasp
 gasping
-gastrointestinal
 gate
 gateway
 gather
@@ -5775,7 +5759,6 @@ his
 hispanic
 hissing
 histopathologic
-histopathological
 historian
 historic
 historical
@@ -6171,7 +6154,6 @@ incompatible
 incompetence
 incompetent
 incomplete
-incomprehensible
 inconceivable
 inconclusive
 inconsequent
@@ -6225,7 +6207,6 @@ indignant
 indirect
 indiscretion
 indisposed
-indistinguishable
 individual
 individualistic
 individuality
@@ -6244,7 +6225,6 @@ indulgence
 indulgent
 indus
 industrial
-industrialization
 industry
 ineffective
 ineffectively
@@ -6595,7 +6575,6 @@ irrelevant
 irreplaceable
 irrepressible
 irresolute
-irresponsibility
 irresponsible
 irresponsibly
 irreverent
@@ -6823,7 +6802,6 @@ kenneth
 kent
 kentucky
 kept
-keratoconjunctivitis
 kerry
 ketchup
 keto
@@ -7407,7 +7385,6 @@ make
 maker
 makeshift
 making
-malappropriation
 malar
 malarial
 malaysian
@@ -7801,15 +7778,12 @@ misery
 misfortune
 misguided
 misinformation
-misinterpretation
 mislead
 misleading
 misled
 misnomer
 misread
 misrepresent
-misrepresentation
-misrepresentative
 miss
 missile
 missing
@@ -7824,7 +7798,6 @@ mister
 mistress
 mistrust
 misunderstand
-misunderstanding
 misunderstood
 misuse
 mitch
@@ -8233,7 +8206,6 @@ nominee
 non
 nonattainment
 noncommittal
-nondenominational
 nondescript
 none
 nonetheless
@@ -8711,7 +8683,6 @@ parade
 paradigm
 paradise
 paradoxical
-paraformaldehyde
 paragraph
 parallel
 parameter
@@ -9646,7 +9617,6 @@ psychological
 psychologist
 psychology
 psychosocial
-psychotherapeutic
 psychotherapy
 psychotic
 pub
@@ -9759,7 +9729,6 @@ quilt
 quinine
 quinoa
 quintessential
-quintessentially
 quirk
 quirky
 quis
@@ -10087,7 +10056,6 @@ reinforcement
 reins
 reinstate
 reinterpret
-reinterpretation
 reintroduction
 reinvigorate
 reiterate
@@ -13023,7 +12991,6 @@ unconditioned
 unconscionable
 unconscious
 unconsciously
-unconstitutional
 uncontrolled
 unconventional
 unconvinced
@@ -13258,7 +13225,6 @@ unsupported
 unsuspecting
 unsustainable
 unsympathetic
-unsympathetically
 untamable
 untangle
 untended

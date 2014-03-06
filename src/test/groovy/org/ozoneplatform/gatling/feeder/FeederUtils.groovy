@@ -3,7 +3,7 @@ package org.ozoneplatform.gatling.feeder
 class FeederUtils {
 
     public final static String DICTIONARY_FILE_PATH = 'dictionary.txt'
-    public final static String CORPUS_FILE_PATH = 'lotsatext.txt'
+    public final static String CORPUS_FILE_PATH = 'wordDistro.txt'
 
     public static String getBaseUrl() {
         String baseUrl = System.properties.getProperty('baseUrl') ?: 'https://localhost:8443/marketplace/'
@@ -15,6 +15,10 @@ class FeederUtils {
     public static Integer getUserCount() { (System.properties.getProperty('userCount') ?: '1') as Integer }
 
     public static Integer getItemCount() { (System.properties.getProperty('itemCount') ?: '1') as Integer }
+
+    public static Integer getTagCount() { (System.properties.getProperty('tagCount') ?: '1') as Integer }
+
+    public static Integer getScenarioUserCount() { (System.properties.getProperty('scenarioUserCount') ?: '1') as Integer }
 
     public static String[] getDictionaryWords() { new File(DICTIONARY_FILE_PATH).readLines() as String[] }
 

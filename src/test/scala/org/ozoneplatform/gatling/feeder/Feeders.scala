@@ -2,14 +2,19 @@ package org.ozoneplatform.gatling.feeder
 
 import io.gatling.core.Predef._
 import scala.util.Random
-import play.api.libs.json.{Json, JsObject}
+import play.api.libs.json.Json
 import scala.collection.immutable.List
+import org.ozoneplatform.gatling.feeder.FeederUtils._
+import play.api.libs.json.JsObject
 
 object Feeders {
+  val corpus = getTextCorpus
+  val wordDistro = getWordsDistro
+  val dictionary = getDictionaryWords
 
   private val RNG = new Random
 
-  def randInt(a:Int, b:Int) = RNG.nextInt((b + 1) - a) + a
+  def randInt(a: Int, b: Int) = RNG.nextInt((b + 1) - a) + a
 
   def randWord(words: Array[String]): String = words(randInt(0, words.size - 1))
 
@@ -32,74 +37,108 @@ object Feeders {
     text.slice(start, start + size)
   }
 
-  def userNumber(count: Integer): String = if (count == 1) "1" else randInt(1, count).toString
-
-  def itemTitle(words: Array[String]): Feeder[String] = {
+  def itemTitle: Feeder[String] = {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("itemTitle" -> randWords(words, randInt(1, 6)))
+      override def next(): Map[String, String] = Map("itemTitle" -> randWords(wordDistro, randInt(1, 6)))
     }
   }
+  
+  /**
+   * Chooses a random word ("tag") from a subset of randomly selected words
+   *
+   * @param tagCount the number of tags to put in the candidate list
+   * @return
+   */
+  def itemTag(tagCount: Int): Feeder[String] = wordFeed(randWordList(wordDistro, tagCount) toArray, "itemTag")
 
-  def itemTag(words: Array[String], tagCount: Int): Feeder[String] = wordFeed(randWordList(words, tagCount) toArray)
-
-  def wordFeed(words: Array[String]): Feeder[String] = {
+  /**
+   * Chooses a random word from a list
+   *
+   * @param words the list of words from which to select the feed
+   * @param property the key used for this feeder
+   * @return
+   */
+  def wordFeed(words: Array[String] = dictionary, property: String = "randomWord"): Feeder[String] = {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("itemTag" -> randWord(words))
+      override def next(): Map[String, String] = Map(property -> randWord(words))
     }
   }
 
-  def itemDescription(text: String): Feeder[String] = {
+  /**
+   *
+   * @return
+   */
+  def itemDescription: Feeder[String] = {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("itemDescription" -> randomString(text, 3000))
+      override def next(): Map[String, String] = Map("itemDescription" -> randomString(corpus, 3000))
     }
   }
 
-  def itemJson(itemsAsString: String) : Feeder[JsObject] = {
-    new Feeder[JsObject] {
-      override def hasNext = true
-
-      override def next(): Map[String, JsObject] = {
-        val storeJson = Json.parse(itemsAsString)
-        val items = (storeJson \ "data").as[Array[JsObject]]
-        val item = items(randInt(0, items.size - 1))
-
-        Map("itemJson" -> item)
-      }
-    }
-  }
-
-  def adminUser(adminCount: Int) : Feeder[String] = {
+  def itemComment: Feeder[String] = {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("adminUser" -> ("testAdmin" + userNumber(adminCount)))
+      override def next(): Map[String, String] = Map("itemComment" -> randomString(corpus, 3000))
     }
   }
 
-  def user(userCount: Int) : Feeder[String] = {
+  def itemRating: Feeder[Float] = {
+    new Feeder[Float] {
+      override def hasNext = true
+
+      override def next(): Map[String, Float] = Map("itemRating" -> randInt(1, 5).as[Float])
+    }
+  }
+
+  def randomServiceItemId: Feeder[Int] = {
+    new Feeder[Int] {
+      lazy val storeItemsAsJsonString = getStoreItemsAsJsonString
+      lazy val storeItems = (Json.parse(storeItemsAsJsonString) \ "data").as[Array[JsObject]]
+
+      override def hasNext = true
+
+      override def next(): Map[String, Int] = Map("serviceItemId" -> (randomItemAsJson(storeItems) \ "id").as[Int])
+    }
+  }
+
+  def randomItemAsJson(jsonData: Array[JsObject]): JsObject = jsonData(randInt(0, jsonData.size - 1))
+
+  def adminUser(userCount: Int) : Feeder[String] = randomUserName(userCount, "testAdmin")
+
+  def user(userCount: Int) : Feeder[String] = randomUserName(userCount, "testUser")
+
+  def userNumber(userCount: Int): String = if (userCount == 1) "1" else randInt(1, userCount).toString
+
+  def randomUserName(userCount: Int, namePrefix: String, property: String = "userName"): Feeder[String] = {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("user" -> ("testUser" + userNumber(userCount)))
+      override def next(): Map[String, String] = Map(property -> (namePrefix + userNumber(userCount)))
     }
   }
 
-  def adminUserLoop(adminCount: Int): Feeder[String] = {
-    @volatile var counter = 1
+  def adminLoop(count: Int) = userNameLoop(count, "testAdmin")
+
+  def userLoop(count: Int) = userNameLoop(count, "testUser")
+  
+  def userNameLoop(userCount: Int, namePrefix: String, property: String = "userName"): Feeder[String] = {
 
     new Feeder[String] {
+      @volatile var counter = 0
+
       override def hasNext = true
 
       override def next(): Map[String, String] = {
-        counter += 0
+        val userNumber = (counter % userCount + 1).toString
+        counter += 1
 
-        Map("loopedAdminUser" -> ("testAdmin" + (counter % adminCount + 1).toString))
+        Map(property -> (namePrefix + userNumber))
       }
     }
   }
