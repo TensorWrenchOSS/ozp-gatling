@@ -4,6 +4,7 @@ import org.ozoneplatform.gatling.feeder.{Feeders, FeederUtils}
 import io.gatling.core.Predef._
 import org.ozoneplatform.gatling.action.MarketplaceActions._
 import org.ozoneplatform.gatling.action.Helpers._
+import scala.concurrent.duration._
 
 class MarketplaceReviews extends Simulation {
 

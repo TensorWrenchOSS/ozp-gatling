@@ -28,7 +28,6 @@ class MarketplaceTagging extends Simulation {
     .feed(Feeders.itemTag(tagCount))
     .feed(Feeders.randomServiceItemId)
     .exec(tagServiceItem)
-    .check(status.in(List(201, 400)))
 
 
   setUp(

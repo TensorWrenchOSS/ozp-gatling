@@ -92,7 +92,7 @@ object Feeders {
     new Feeder[Float] {
       override def hasNext = true
 
-      override def next(): Map[String, Float] = Map("itemRating" -> randInt(1, 5).as[Float])
+      override def next(): Map[String, Float] = Map("itemRating" -> randInt(1, 5).asInstanceOf[Float])
     }
   }
 

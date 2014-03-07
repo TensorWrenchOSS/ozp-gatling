@@ -25,6 +25,7 @@ object MarketplaceActions {
     .headers(Helpers.restApiHeaders)
     .body(StringBody("{\"title\": \"" +  "${itemTag}" + "\"}"))
     .basicAuth("${userName}", "password")
+    .check(status.in(List(201,400)))
 
   def reviewServiceItem: ActionBuilder = http("Post a review on a serviceItem")
     .post("api/serviceItem" + "${serviceItemId}" + "/itemComment")
