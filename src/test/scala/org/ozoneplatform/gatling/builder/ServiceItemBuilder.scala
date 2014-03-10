@@ -23,7 +23,7 @@ class ServiceItemBuilder(jsonIn: JsObject) {
 
   def description(description: String): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("description" -> description))
 
-  def approve(): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("approvalStatus" -> "Approved"))
+  def approve(): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("approvalStatus" -> "Approved", "isOutside" -> true))
 
   def submit(): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("approvalStatus" -> "Pending"))
 

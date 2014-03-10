@@ -6,6 +6,7 @@ import play.api.libs.json.Json
 import scala.collection.immutable.List
 import org.ozoneplatform.gatling.feeder.FeederUtils._
 import play.api.libs.json.JsObject
+import scala.collection.mutable.ArrayBuffer
 
 object Feeders {
   val corpus = getTextCorpus
@@ -35,6 +36,14 @@ object Feeders {
   def randomString(text: String, size: Int): String = {
     val start = randInt(0, text.size - (size + 1))
     text.slice(start, start + size)
+  }
+
+  def searchQuery: Feeder[String] = {
+    new Feeder[String] {
+      override def hasNext = true
+
+      override def next(): Map[String, String] = Map("queryString" -> randWords(wordDistro, 5))
+    }
   }
 
   def itemTitle: Feeder[String] = {
@@ -68,10 +77,6 @@ object Feeders {
     }
   }
 
-  /**
-   *
-   * @return
-   */
   def itemDescription: Feeder[String] = {
     new Feeder[String] {
       override def hasNext = true
@@ -84,7 +89,7 @@ object Feeders {
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("itemComment" -> randomString(corpus, 3000))
+      override def next(): Map[String, String] = Map("itemComment" -> randomString(corpus, 100))
     }
   }
 
@@ -96,10 +101,35 @@ object Feeders {
     }
   }
 
-  def randomServiceItemId: Feeder[Int] = {
+  def filterAdminUsers(words: Array[JsObject], acc: Array[JsObject] = Array[JsObject]()): Array[JsObject] = {
+    if (words.size == 0) acc
+    else if ((words.head \ "username").toString().contains("Admin")) filterAdminUsers(words.tail, acc ++ Array[JsObject](words.head))
+    else filterAdminUsers(words.tail, acc)
+  }
+
+  def randomAdminUserName(storeUsersAsJson: String, propertyName: String = "adminUserName"): Feeder[String] = {
+    new Feeder[String] {
+      val storeUsers = filterAdminUsers((Json.parse(storeUsersAsJson) \ "data").as[Array[JsObject]])
+
+      override def hasNext = true
+
+      override def next(): Map[String, String] = Map(propertyName -> (randomItemAsJson(storeUsers) \ "username").as[String])
+    }
+  }
+  
+  def randomUserName(storeUsersAsJson: String, propertyName: String = "userName"): Feeder[String] = {
+    new Feeder[String] {
+      val storeUsers = (Json.parse(storeUsersAsJson) \ "data").as[Array[JsObject]]
+
+      override def hasNext = true
+
+      override def next(): Map[String, String] = Map(propertyName -> (randomItemAsJson(storeUsers) \ "username").as[String])
+    }
+  }
+
+  def randomServiceItemId(storeItemsAsJson: String): Feeder[Int] = {
     new Feeder[Int] {
-      lazy val storeItemsAsJsonString = getStoreItemsAsJsonString
-      lazy val storeItems = (Json.parse(storeItemsAsJsonString) \ "data").as[Array[JsObject]]
+      val storeItems = (Json.parse(storeItemsAsJson) \ "data").as[Array[JsObject]]
 
       override def hasNext = true
 
@@ -109,37 +139,14 @@ object Feeders {
 
   def randomItemAsJson(jsonData: Array[JsObject]): JsObject = jsonData(randInt(0, jsonData.size - 1))
 
-  def adminUser(userCount: Int) : Feeder[String] = randomUserName(userCount, "testAdmin")
-
-  def user(userCount: Int) : Feeder[String] = randomUserName(userCount, "testUser")
-
-  def userNumber(userCount: Int): String = if (userCount == 1) "1" else randInt(1, userCount).toString
-
-  def randomUserName(userCount: Int, namePrefix: String, property: String = "userName"): Feeder[String] = {
+  def generateUserName(isAdmin: Boolean = false, propertyName: String = "userName"): Feeder[String] = {
     new Feeder[String] {
-      override def hasNext = true
 
-      override def next(): Map[String, String] = Map(property -> (namePrefix + userNumber(userCount)))
-    }
-  }
-
-  def adminLoop(count: Int) = userNameLoop(count, "testAdmin")
-
-  def userLoop(count: Int) = userNameLoop(count, "testUser")
-  
-  def userNameLoop(userCount: Int, namePrefix: String, property: String = "userName"): Feeder[String] = {
-
-    new Feeder[String] {
-      @volatile var counter = 0
+      def baseString(): String = randWords(dictionary, 4).replaceAll(" ", "")
 
       override def hasNext = true
 
-      override def next(): Map[String, String] = {
-        val userNumber = (counter % userCount + 1).toString
-        counter += 1
-
-        Map(property -> (namePrefix + userNumber))
-      }
+      override def next(): Map[String, String] = Map(propertyName -> (if (isAdmin) "Admin" + baseString()  else baseString()))
     }
   }
 }

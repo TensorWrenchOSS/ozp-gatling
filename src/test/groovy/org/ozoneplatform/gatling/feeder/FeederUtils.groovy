@@ -18,9 +18,9 @@ class FeederUtils {
 
     public static Integer getTagCount() { (System.properties.getProperty('tagCount') ?: '1') as Integer }
 
-    public static Integer getRampPeriod() { (System.properties.getProperty('rampPeriod') ?: '1000') as Integer }
+    public static Integer getRampPeriod() { (System.properties.getProperty('rampPeriod') ?: '10') as Integer }
 
-    public static Integer getScenarioUserCount() { (System.properties.getProperty('scenarioUserCount') ?: '1') as Integer }
+    public static Integer getScenarioUserCount() { (System.properties.getProperty('scenarioUserCount') ?: '10') as Integer }
 
     public static String[] getDictionaryWords() { new File(DICTIONARY_FILE_PATH).readLines() as String[] }
 
@@ -29,4 +29,6 @@ class FeederUtils {
     public static String[] getWordsDistro() { textCorpus.split() }
 
     public static String getStoreItemsAsJsonString() { ['curl', '-XGET', '-utestAdmin1:password', baseUrl + 'api/serviceItem'].execute().text }
+
+    public static String getStoreProfilesAsJsonString() { ['curl', '-XGET', '-utestAdmin1:password', baseUrl + 'api/profile'].execute().text }
 }
