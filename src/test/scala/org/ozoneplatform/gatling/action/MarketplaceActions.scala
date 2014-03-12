@@ -54,11 +54,13 @@ object MarketplaceActions {
       (results \ "data").as[List[JsObject]]
     })).saveAs("searchResults"))
 
+  def getConfig: ActionBuilder =
+    http("Request config.js")
+      .get("config.js")
+      .headers(Helpers.configHeaders)
+      .basicAuth("${userName}", "password")
 
-  def getServiceItem: ActionBuilder = http("Request a service item")
-    .get("api/serviceItem/" + "${serviceItemId}")
-    .headers(Helpers.restApiHeaders)
-    .basicAuth("${userName}", "password")
+  def searchChain: ChainBuilder = exec(getConfig).exec(searchMarketplace)
 
   /**
    * Gets search results from the session, chooses the first item and after a pause (for the user to "think"), performs
@@ -79,8 +81,46 @@ object MarketplaceActions {
   
         session.set("serviceItemId", itemId).set("searchResults", results.tail)
       })
-      .exec(getServiceItem)
+      .group("Quick View") {
+        serviceItemGroup
+      }
       .pause(30)
       .randomSwitch(actionPercent -> exec(action))
   }
+
+  def serviceItemGroup: ChainBuilder =
+    exec(getServiceItem)
+      .exec(getItemActivities)
+      .exec(getRequiredItems)
+      .exec(getItemComments)
+
+  def getServiceItem: ActionBuilder =
+    http("Request a service item")
+      .get("api/serviceItem/" + "${serviceItemId}")
+      .headers(Helpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getItemActivities: ActionBuilder =
+    http("Request Item Activities")
+      .get("api/serviceItem/" + "${serviceItemId}" + "/activity")
+      .queryParam("max", "24")
+      .queryParam("offset", "0")
+      .queryParam("sort", "activityDate")
+      .queryParam("dir", "desc")
+      .headers(Helpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getRequiredItems: ActionBuilder =
+    http("Get Required Items")
+      .get("public/serviceItem/getRequiredItems/" + "${serviceItemId}")
+      .queryParam("accessAlertShown", "true")
+      .headers(Helpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getItemComments: ActionBuilder =
+    http("Get Item Comments")
+      .get("itemComment/commentsByServiceItem/" + "${serviceItemId}")
+      .queryParam("accessAlertShown", "true")
+      .headers(Helpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
 }

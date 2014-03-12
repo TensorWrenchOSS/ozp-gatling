@@ -13,4 +13,6 @@ object Helpers {
     .acceptHeader("application/json")
 
   val restApiHeaders = Map("Content-Type" -> "application/json")
+
+  val configHeaders = Map("Content-Type" -> "text/html")
 }

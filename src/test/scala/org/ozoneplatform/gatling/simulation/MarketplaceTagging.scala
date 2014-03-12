@@ -20,7 +20,9 @@ class MarketplaceTagging extends Simulation {
     .feed(Feeders.randomUserName(profilesAsJson))
     .repeat(10) {
       feed(Feeders.searchQuery)
-        .exec(searchMarketplace)
+        .group("Search Page") {
+          searchChain
+        }
         .pause(3 seconds)
         .repeat(3) {
           feed(Feeders.itemTag(tagCount))
