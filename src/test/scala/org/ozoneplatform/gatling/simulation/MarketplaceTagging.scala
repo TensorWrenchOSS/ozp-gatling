@@ -12,31 +12,24 @@ import bootstrap._
 class MarketplaceTagging extends Simulation {
   val rampPeriod = getRampPeriod
   val profilesAsJson = getStoreProfilesAsJsonString
-  val userCount = getScenarioUserCount
-
-  val searchAndTagFirstItem = exec(searchMarketplace)
-    .pause(1 second)
-    .doIf(session => session("searchResults").as[List[JsObject]].size > 0) {
-      exec((session: Session) => {
-        val firstResult = session("searchResults").as[List[JsObject]].head
-        val itemId = firstResult \ "id"
-
-        session.set("serviceItemId", itemId)
-      })
-      .exec(getServiceItem)
-      .pause(1)
-      .exec(tagServiceItem)
-    }
+  val userLoops = getScenarioUserCount
+  val tagCount = getTagCount
+  val tagPercentage = getActionPercentage
 
   val searchAndTag = scenario("Search and review")
     .feed(Feeders.randomUserName(profilesAsJson))
     .repeat(10) {
       feed(Feeders.searchQuery)
-      .feed(Feeders.itemTag(200))
-      .exec(searchAndTagFirstItem)
+        .exec(searchMarketplace)
+        .pause(3 seconds)
+        .repeat(3) {
+          feed(Feeders.itemTag(tagCount))
+            .exec(getSearchItemAndDoAction(tagServiceItem, tagPercentage))
+            .pause(3 seconds)
+        }
     }
 
   setUp(
-    searchAndTag.inject(ramp(userCount.toInt users) over (rampPeriod.toInt seconds))
+    searchAndTag.inject(ramp(userLoops.toInt users) over (rampPeriod.toInt seconds))
   ).protocols(restHttpProtocol)
 }

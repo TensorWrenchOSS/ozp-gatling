@@ -16,7 +16,9 @@ class FeederUtils {
 
     public static Integer getItemCount() { (System.properties.getProperty('itemCount') ?: '1') as Integer }
 
-    public static Integer getTagCount() { (System.properties.getProperty('tagCount') ?: '1') as Integer }
+    public static Integer getTagCount() { (System.properties.getProperty('tagCount') ?: '1000') as Integer }
+
+    public static Integer getActionPercentage() { (System.properties.getProperty('actionPercentage') ?: '5') as Integer }
 
     public static Integer getRampPeriod() { (System.properties.getProperty('rampPeriod') ?: '10') as Integer }
 
