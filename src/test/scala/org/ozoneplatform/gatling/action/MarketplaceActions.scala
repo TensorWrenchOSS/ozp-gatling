@@ -93,6 +93,7 @@ object MarketplaceActions {
       .exec(getItemActivities)
       .exec(getRequiredItems)
       .exec(getItemComments)
+      .exec(getItemTags)
 
   def getServiceItem: ActionBuilder =
     http("Request a service item")
@@ -121,6 +122,12 @@ object MarketplaceActions {
     http("Get Item Comments")
       .get("itemComment/commentsByServiceItem/" + "${serviceItemId}")
       .queryParam("accessAlertShown", "true")
+      .headers(Helpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getItemTags: ActionBuilder =
+    http("Get Item Tags")
+      .get("api/serviceItem/" + "${serviceItemId}" + "/tag")
       .headers(Helpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 }
