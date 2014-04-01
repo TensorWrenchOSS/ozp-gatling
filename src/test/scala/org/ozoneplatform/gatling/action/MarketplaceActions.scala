@@ -7,16 +7,18 @@ import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import bootstrap._
 import io.gatling.core.structure.ChainBuilder
+import scala.concurrent.duration._
+import io.gatling.http.request.builder.PostHttpRequestBuilder
 
 object MarketplaceActions {
   def createUser: ActionBuilder = http("Login and create a profile by making a simple request")
     .get("api/serviceItem")
-    .headers(Helpers.restApiHeaders)
+    .headers(ActionHelpers.restApiHeaders)
     .basicAuth("${userName}", "password")
 
   def createServiceItem(userName: String): ActionBuilder = http("Create a service item")
     .post("api/serviceItem")
-    .headers(Helpers.restApiHeaders)
+    .headers(ActionHelpers.restApiHeaders)
     .body(StringBody(new ServiceItemBuilder()
       .title("${itemTitle}")
       .description("${itemDescription}")
@@ -26,14 +28,14 @@ object MarketplaceActions {
 
   def modifyServiceItem(userName: String): ActionBuilder = http("Modify a service item")
     .put("api/serviceItem/" + "${serviceItemId}")
-    .headers(Helpers.restApiHeaders)
+    .headers(ActionHelpers.restApiHeaders)
     .body(StringBody("${serviceItem}"))
     .basicAuth(userName, "password")
     .check(jsonPath("$").saveAs("serviceItem"), jsonPath("$.id").saveAs("serviceItemId"))
 
   def tagServiceItem: ActionBuilder = http("Tag a service item")
     .post("api/serviceItem/" + "${serviceItemId}" + "/tag")
-    .headers(Helpers.restApiHeaders)
+    .headers(ActionHelpers.restApiHeaders)
     .body(StringBody("{\"title\": \"" +  "${itemTag}" + "\"}"))
     .basicAuth("${userName}", "password")
     //TODO: handle tag that already exists on the item
@@ -41,7 +43,7 @@ object MarketplaceActions {
 
   def reviewServiceItem: ActionBuilder = http("Post a review on a serviceItem")
     .post("api/serviceItem/" + "${serviceItemId}" + "/itemComment")
-    .headers(Helpers.restApiHeaders)
+    .headers(ActionHelpers.restApiHeaders)
     .body(StringBody("{\"text\": \"" + "${itemComment}" + "\", \"rate\": " + "${itemRating}" + "}"))
     .basicAuth("${userName}", "password")
 
@@ -57,7 +59,7 @@ object MarketplaceActions {
   def getConfig: ActionBuilder =
     http("Request config.js")
       .get("config.js")
-      .headers(Helpers.configHeaders)
+      .headers(ActionHelpers.configHeaders)
       .basicAuth("${userName}", "password")
 
   def searchChain: ChainBuilder = exec(getConfig).exec(searchMarketplace)
@@ -72,7 +74,7 @@ object MarketplaceActions {
    * @param actionPercent
    * @return
    */
-  def getSearchItemAndDoAction(action: ActionBuilder, actionPercent: Int = 100): ChainBuilder =
+  def getSearchItemAndDoAction(action: ActionBuilder, actionPercent: Int = 100, thinkFor: Int = 30): ChainBuilder =
     doIf(session => session("searchResults").as[List[JsObject]].size > 0) {
       exec((session: Session) => {
         val results = session("searchResults").as[List[JsObject]]
@@ -84,9 +86,9 @@ object MarketplaceActions {
       .group("Quick View") {
         serviceItemGroup
       }
-      .pause(30)
+      .pause(thinkFor seconds)
       .randomSwitch(actionPercent -> exec(action))
-  }
+    }
 
   def serviceItemGroup: ChainBuilder =
     exec(getServiceItem)
@@ -98,7 +100,7 @@ object MarketplaceActions {
   def getServiceItem: ActionBuilder =
     http("Request a service item")
       .get("api/serviceItem/" + "${serviceItemId}")
-      .headers(Helpers.restApiHeaders)
+      .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
   def getItemActivities: ActionBuilder =
@@ -108,26 +110,65 @@ object MarketplaceActions {
       .queryParam("offset", "0")
       .queryParam("sort", "activityDate")
       .queryParam("dir", "desc")
-      .headers(Helpers.restApiHeaders)
+      .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
   def getRequiredItems: ActionBuilder =
     http("Get Required Items")
       .get("public/serviceItem/getRequiredItems/" + "${serviceItemId}")
       .queryParam("accessAlertShown", "true")
-      .headers(Helpers.restApiHeaders)
+      .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
   def getItemComments: ActionBuilder =
     http("Get Item Comments")
       .get("itemComment/commentsByServiceItem/" + "${serviceItemId}")
       .queryParam("accessAlertShown", "true")
-      .headers(Helpers.restApiHeaders)
+      .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
   def getItemTags: ActionBuilder =
     http("Get Item Tags")
       .get("api/serviceItem/" + "${serviceItemId}" + "/tag")
-      .headers(Helpers.restApiHeaders)
+      .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
+
+  def createAdminTypeBase(url: String): PostHttpRequestBuilder =
+    http("Manage Admin Type: " + url)
+      .post(url)
+      .headers(ActionHelpers.adminTypeHeaders)
+      .basicAuth("${adminUserName}", "password")
+      .queryParam("accessAlertShown", "true")
+
+  def customFieldDefinitionBase: PostHttpRequestBuilder =
+    createAdminTypeBase("customFieldDefinition/save")
+      .param("allTypes", "true")
+      .param("section", "typeProperties")
+      .param("isRequred", "false")
+      .param("name", "${cfName}")
+      .param("label", "${cfLabel}")
+
+  def createTextCustomField: ActionBuilder = customFieldDefinitionBase.param("styleType", "TEXT")
+
+  def createTextAreaCustomField: ActionBuilder = customFieldDefinitionBase.param("styleType", "TEXT_AREA")
+
+  def createDropDownCustomField: ActionBuilder = customFieldDefinitionBase
+    .param("styleType", "DROP_DOWN")
+    .param("fieldValues[0].displayText", "${cfOption0}")
+    .param("fieldValues[1].displayText", "${cfOption1}")
+    .param("fieldValues[2].displayText", "${cfOption2}")
+    .param("fieldValues[3].displayText", "${cfOption3}")
+    .param("fieldValues[4].displayText", "${cfOption4}")
+    .param("fieldValues[5].displayText", "${cfOption5}")
+    .param("fieldValues[6].displayText", "${cfOption6}")
+
+  def createContactType: ActionBuilder =
+    createAdminTypeBase("contactType/save")
+      .param("_required", "false")
+      .param("title", "${contactTypeTitle}")
+
+  def createCategory: ActionBuilder =
+    createAdminTypeBase("category/save")
+      .param("title", "${categoryTitle}")
+
 }

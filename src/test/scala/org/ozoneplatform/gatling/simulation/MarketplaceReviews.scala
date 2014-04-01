@@ -3,11 +3,10 @@ package org.ozoneplatform.gatling.simulation
 import org.ozoneplatform.gatling.feeder.Feeders
 import io.gatling.core.Predef._
 import org.ozoneplatform.gatling.action.MarketplaceActions._
-import org.ozoneplatform.gatling.action.Helpers._
-import scala.concurrent.duration._
+import org.ozoneplatform.gatling.action.ActionHelpers._
 import org.ozoneplatform.gatling.feeder.FeederUtils._
 import bootstrap._
-import play.api.libs.json.JsObject
+import scala.concurrent.duration._
 
 class MarketplaceReviews extends Simulation {
   val rampPeriod = getRampPeriod
@@ -16,16 +15,16 @@ class MarketplaceReviews extends Simulation {
   val reviewPercentage = getActionPercentage
 
   val searchAndReview = scenario("Search and review")
-    .feed(Feeders.randomUserName(profilesAsJson))
+    .feed(Feeders.selectUserNameFeeder(profilesAsJson))
     .repeat(10) {
-      feed(Feeders.searchQuery)
+      feed(Feeders.wordListFeeder(propertyName = "queryString"))
         .group("Search Page") {
           searchChain
         }
         .pause(3 seconds)
         .repeat(3) {
-          feed(Feeders.itemComment)
-            .feed(Feeders.itemRating)
+          feed(Feeders.blurbFeeder(propertyName = "itemComment"))
+            .feed(Feeders.itemRatingFeeder())
             .exec(getSearchItemAndDoAction(reviewServiceItem, reviewPercentage))
             .pause(3 seconds)
     }

@@ -1,137 +1,87 @@
 package org.ozoneplatform.gatling.feeder
 
 import io.gatling.core.Predef._
-import scala.util.Random
 import play.api.libs.json.Json
-import scala.collection.immutable.List
-import org.ozoneplatform.gatling.feeder.FeederUtils._
 import play.api.libs.json.JsObject
-import scala.collection.mutable.ArrayBuffer
+import org.ozoneplatform.gatling.feeder.FeederHelpers._
 
 object Feeders {
-  val corpus = getTextCorpus
-  val wordDistro = getWordsDistro
-  val dictionary = getDictionaryWords
-
-  private val RNG = new Random
 
   /**
-   * return a psuedo random integer between a and b inclusive
-   *
-   */
-  def randInt(a: Int, b: Int) = RNG.nextInt((b + 1) - a) + a
-
-  /**
-   * Given an array of string, choose one at random
-   */
-  def randWord(words: Array[String]): String = words(randInt(0, words.size - 1))
-
-  /**
-   * Given an array of strings, return an array of size count of strings chosen at random from the original list
-   */
-  def randWordList(words: Array[String], count: Int, acc: String = ""): String =
-    if (count < 0) acc
-    else if (acc.size > 0) randWordList(words, count - 1, randWord(words) + " " + acc)
-    else randWordList(words, count - 1, randWord(words))
-
-  def randWordSet(words: Array[String], count: Int, acc: List[String] = List[String]()): List[String] = {
-    if (acc.size == count) acc
-    else {
-      val word = randWord(words)
-      if (acc.contains(word)) randWordSet(words, count, acc)
-      else randWordSet(words, count, acc ++ List[String](word))
-    }
-  }
-
-  def randomString(text: String, size: Int): String = {
-    val start = randInt(0, text.size - (size + 1))
-    text.slice(start, start + size)
-  }
-
-  def searchQuery: Feeder[String] = {
-    new Feeder[String] {
-      override def hasNext = true
-
-      override def next(): Map[String, String] = Map("queryString" -> randWordList(wordDistro, 5))
-    }
-  }
-
-  def itemTitle: Feeder[String] = {
-    new Feeder[String] {
-      override def hasNext = true
-
-      override def next(): Map[String, String] = Map("itemTitle" -> randWordList(wordDistro, randInt(1, 6)))
-    }
-  }
-  
-  /**
-   * Chooses a random word ("tag") from a subset of randomly selected words
-   *
-   * @param tagCount the number of tags to put in the candidate list
+   * returns a randomly generated email
+   * 
+   * @param propertyName the key used to store the value in the session
    * @return
    */
-  def itemTag(tagCount: Int): Feeder[String] = wordFeed(randWordSet(wordDistro, tagCount) toArray, "itemTag")
+  def emailFeeder(propertyName: String = "email"): Feeder[String] =
+    new Feeder[String] {
+      override def hasNext = true
+
+      override def next(): Map[String, String] = Map(propertyName -> randomEmail)
+    }
+
+  /**
+   * returns a string made up of a random number of randomly selected words
+   * @param words the words to choose from (uses wordDistro by default)
+   * @param maxSize the max size of the list
+   * @param propertyName the key used to store the value in the session
+   * @return
+   */
+  def wordListFeeder(words: Array[String] = wordDistro, maxSize: Int = 5, propertyName: String = "wordList"): Feeder[String] =
+    new Feeder[String] {
+      override def hasNext = true
+
+      override def next(): Map[String, String] = Map(propertyName -> randWordListAsString(wordDistro, randInt(1, maxSize)))
+    }
 
   /**
    * Chooses a random word from a list
    *
    * @param words the list of words from which to select the feed
-   * @param property the key used for this feeder
+   * @param propertyName the key used for this feeder
    * @return
    */
-  def wordFeed(words: Array[String] = dictionary, property: String = "randomWord"): Feeder[String] = {
+  def wordFeeder(words: Array[String] = wordDistro, propertyName: String = "randomWord"): Feeder[String] =
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map(property -> randWord(words))
+      override def next(): Map[String, String] = Map(propertyName -> randWord(words))
     }
-  }
 
-  def itemDescription: Feeder[String] = {
+  /**
+   * Selects a random string of text from a corpus
+   *
+   * @param maxLength the maximum length of the string
+   * @param propertyName the key to use when putting the value in the session
+   * @return
+   */
+  def blurbFeeder(maxLength: Int = 255, propertyName: String = "blurb"): Feeder[String] =
     new Feeder[String] {
       override def hasNext = true
 
-      override def next(): Map[String, String] = Map("itemDescription" -> randomString(corpus, 3000))
+      override def next(): Map[String, String] = Map(propertyName -> randomString(corpus, maxLength))
     }
-  }
 
-  def itemComment: Feeder[String] = {
-    new Feeder[String] {
-      override def hasNext = true
-
-      override def next(): Map[String, String] = Map("itemComment" -> randomString(corpus, 100))
-    }
-  }
-
-  def itemRating: Feeder[Float] = {
+  /**
+   * Provides a random Service Item rating from 1.0 - 5.0
+   * @param propertyName the key to use in the session when storing the value
+   * @return
+   */
+  def itemRatingFeeder(propertyName: String = "itemRating"): Feeder[Float] =
     new Feeder[Float] {
       override def hasNext = true
 
-      override def next(): Map[String, Float] = Map("itemRating" -> randInt(1, 5).asInstanceOf[Float])
+      override def next(): Map[String, Float] = Map(propertyName -> randInt(1, 5).asInstanceOf[Float])
     }
-  }
-
-  /**
-   * Given an array of profiles as JsObjects, return the subset of profiles from that array that are admins
-   *
-   * @param words
-   * @param acc
-   * @return
-   */
-  def filterAdminUsers(words: Array[JsObject], acc: Array[JsObject] = Array[JsObject]()): Array[JsObject] = {
-    if (words.size == 0) acc
-    else if ((words.head \ "username").toString().contains("Admin")) filterAdminUsers(words.tail, acc ++ Array[JsObject](words.head))
-    else filterAdminUsers(words.tail, acc)
-  }
 
   /**
    * Given a string of profiles as json, filter out the admins and return a randomly chosen admin user name
    *
-   * @param storeUsersAsJson
-   * @param propertyName
+   * @param storeUsersAsJson the response from a GET to api/profile
+   * @param propertyName the key to use when inserting the userName into the session (defaults to userName)
    * @return
    */
-  def randomAdminUserName(storeUsersAsJson: String, propertyName: String = "adminUserName"): Feeder[String] = {
+  def selectAdminUserFeeder(storeUsersAsJson: String, propertyName: String = "userName"): Feeder[String] =
     new Feeder[String] {
       val storeUsers = filterAdminUsers((Json.parse(storeUsersAsJson) \ "data").as[Array[JsObject]])
 
@@ -139,16 +89,15 @@ object Feeders {
 
       override def next(): Map[String, String] = Map(propertyName -> (randomItemAsJson(storeUsers) \ "username").as[String])
     }
-  }
 
   /**
    * Given a string of profiles as json, return a randomly chosen username from that list
    *
-   * @param storeUsersAsJson
-   * @param propertyName
+   * @param storeUsersAsJson the response from a GET to api/profile
+   * @param propertyName the key to use when inserting the userName into the session (defaults to userName)
    * @return
    */
-  def randomUserName(storeUsersAsJson: String, propertyName: String = "userName"): Feeder[String] = {
+  def selectUserNameFeeder(storeUsersAsJson: String, propertyName: String = "userName"): Feeder[String] =
     new Feeder[String] {
       val storeUsers = (Json.parse(storeUsersAsJson) \ "data").as[Array[JsObject]]
 
@@ -156,34 +105,37 @@ object Feeders {
 
       override def next(): Map[String, String] = Map(propertyName -> (randomItemAsJson(storeUsers) \ "username").as[String])
     }
-  }
 
   /**
    * Given a string of service items as json, return a randomly chosen service item id from that list
    *
-   * @param storeItemsAsJson
+   * @param storeItemsAsJson the response from a GET to api/serviceItem
+   * @param propertyName the key to use when inserting the id into the session (defaults to serviceItemId)
    * @return
    */
-  def randomServiceItemId(storeItemsAsJson: String): Feeder[Int] = {
+  def selectServiceItemIdFeeder(storeItemsAsJson: String, propertyName: String = "serviceItemId"): Feeder[Int] =
     new Feeder[Int] {
       val storeItems = (Json.parse(storeItemsAsJson) \ "data").as[Array[JsObject]]
 
       override def hasNext = true
 
-      override def next(): Map[String, Int] = Map("serviceItemId" -> (randomItemAsJson(storeItems) \ "id").as[Int])
+      override def next(): Map[String, Int] = Map(propertyName -> (randomItemAsJson(storeItems) \ "id").as[Int])
     }
-  }
 
-  def randomItemAsJson(jsonData: Array[JsObject]): JsObject = jsonData(randInt(0, jsonData.size - 1))
-
-  def generateUserName(isAdmin: Boolean = false, propertyName: String = "userName"): Feeder[String] = {
+  /**
+   * Generates a random username
+   * 
+   * @param isAdmin whether or not this user is an Admin (defaults to false)
+   * @param propertyName the key to use when inserting the username into the session (defaults to userName)
+   * @return
+   */
+  def generateUserNameFeeder(isAdmin: Boolean = false, propertyName: String = "userName"): Feeder[String] =
     new Feeder[String] {
 
-      def baseString(): String = randWordList(dictionary, 4).replaceAll(" ", "")
+      def baseString(): String = randWordListAsString(dictionary, 4).replaceAll(" ", "")
 
       override def hasNext = true
 
       override def next(): Map[String, String] = Map(propertyName -> (if (isAdmin) "Admin" + baseString()  else baseString()))
     }
-  }
 }
