@@ -1,7 +1,7 @@
-package org.ozoneplatform.gatling.action
+package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.feeder.FeederUtils
+import org.ozoneplatform.gatling.aml.feeder.FeederUtils
 import io.gatling.core.config.Protocol
 
 object ActionHelpers {

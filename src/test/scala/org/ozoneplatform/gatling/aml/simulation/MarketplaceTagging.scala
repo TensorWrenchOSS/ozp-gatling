@@ -1,21 +1,21 @@
-package org.ozoneplatform.gatling.simulation
+package org.ozoneplatform.gatling.aml.simulation
 
 import io.gatling.core.Predef._
-import org.ozoneplatform.gatling.action.MarketplaceActions._
-import org.ozoneplatform.gatling.feeder.Feeders
-import org.ozoneplatform.gatling.feeder.FeederHelpers._
-import org.ozoneplatform.gatling.action.ActionHelpers._
-import org.ozoneplatform.gatling.feeder.FeederUtils._
+import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
+import org.ozoneplatform.gatling.aml.feeder.FeederHelpers
+import org.ozoneplatform.gatling.aml.feeder.Feeders
+import org.ozoneplatform.gatling.aml.feeder.FeederUtils
+import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import bootstrap._
 import scala.concurrent.duration._
 
 class MarketplaceTagging extends Simulation {
-  val rampPeriod = getRampPeriod
-  val profilesAsJson = getStoreProfilesAsJsonString
-  val userLoops = getScenarioUserCount
-  val tagCount = getTagCount
-  val tagPercentage = getActionPercentage
-  val tagList = randWordSet(count = tagCount)
+  val rampPeriod = FeederUtils.getRampPeriod
+  val profilesAsJson = FeederUtils.getStoreProfilesAsJsonString
+  val userLoops = FeederUtils.getScenarioUserCount
+  val tagCount = FeederUtils.getTagCount
+  val tagPercentage = FeederUtils.getActionPercentage
+  val tagList = FeederHelpers.randWordSet(count = tagCount)
 
   val searchAndTag = scenario("Search and review")
     .feed(Feeders.selectUserNameFeeder(profilesAsJson))

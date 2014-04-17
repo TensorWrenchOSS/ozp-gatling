@@ -1,9 +1,9 @@
-package org.ozoneplatform.gatling.feeder
+package org.ozoneplatform.gatling.aml.feeder
 
 import io.gatling.core.Predef._
 import play.api.libs.json.Json
 import play.api.libs.json.JsObject
-import org.ozoneplatform.gatling.feeder.FeederHelpers._
+import org.ozoneplatform.gatling.aml.feeder.FeederHelpers._
 
 object Feeders {
 

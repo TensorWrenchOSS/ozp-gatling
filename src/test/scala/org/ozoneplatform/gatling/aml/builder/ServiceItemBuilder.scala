@@ -1,4 +1,4 @@
-package org.ozoneplatform.gatling.builder
+package org.ozoneplatform.gatling.aml.builder
 
 import play.api.libs.json._
 

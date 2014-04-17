@@ -1,8 +1,8 @@
-package org.ozoneplatform.gatling.feeder
+package org.ozoneplatform.gatling.aml.feeder
 
-import org.ozoneplatform.gatling.feeder.FeederUtils._
 import scala.util.Random
 import play.api.libs.json.JsObject
+import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
 
 object FeederHelpers {
   val corpus = getTextCorpus

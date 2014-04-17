@@ -1,17 +1,20 @@
-package org.ozoneplatform.gatling.simulation
+package org.ozoneplatform.gatling.aml.simulation
 
-import org.ozoneplatform.gatling.feeder.{Feeders, FeederUtils}
+import org.ozoneplatform.gatling.aml.feeder.{Feeders, FeederHelpers}
+import org.ozoneplatform.gatling.aml.feeder.FeederUtils
+
 import io.gatling.core.Predef._
-import org.ozoneplatform.gatling.action.MarketplaceActions._
-import org.ozoneplatform.gatling.action.ActionHelpers._
-import org.ozoneplatform.gatling.builder.ServiceItemBuilder
+import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
+import org.ozoneplatform.gatling.aml.action.ActionHelpers._
+import org.ozoneplatform.gatling.aml.builder.ServiceItemBuilder
 import bootstrap._
-import org.ozoneplatform.gatling.feeder.FeederUtils._
 import scala.concurrent.duration._
 
 class InitializeMarketplaceItems extends Simulation {
-  val itemCount = FeederUtils.getItemCount
-  val profilesAsJson = getStoreProfilesAsJsonString
+  val itemCount = 5;//FeederUtils.getItemCount
+  val profilesAsJson = FeederUtils.getStoreProfilesAsJsonString
+
+  println(profilesAsJson)
 
   val submitServiceItem = exec((session: Session) => {
     val item = session("serviceItem").as[String]

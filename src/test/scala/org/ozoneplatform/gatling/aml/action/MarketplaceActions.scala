@@ -1,8 +1,8 @@
-package org.ozoneplatform.gatling.action
+package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.builder.ServiceItemBuilder
+import org.ozoneplatform.gatling.aml.builder.ServiceItemBuilder
 import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import bootstrap._
