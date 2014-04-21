@@ -11,10 +11,8 @@ import bootstrap._
 import scala.concurrent.duration._
 
 class InitializeMarketplaceItems extends Simulation {
-  val itemCount = 5;//FeederUtils.getItemCount
+  val itemCount = FeederUtils.getItemCount
   val profilesAsJson = FeederUtils.getStoreProfilesAsJsonString
-
-  println(profilesAsJson)
 
   val submitServiceItem = exec((session: Session) => {
     val item = session("serviceItem").as[String]
