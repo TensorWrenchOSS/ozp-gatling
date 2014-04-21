@@ -8,8 +8,9 @@ class ServiceItemBuilder(jsonIn: JsObject) {
 
   def this() {
     this(Json.obj(
-      "types" -> Json.obj("id" -> 1),
-      "launchUrl" -> "https://"
+      "launchUrl" -> "https://",
+      "imageLargeUrl" -> "https://",
+      "imageSmallUrl" -> "https://"
     ))
   }
 
@@ -18,6 +19,8 @@ class ServiceItemBuilder(jsonIn: JsObject) {
       Json.parse(jsonString).as[JsObject]
     )
   }
+
+  def types(typesId: String): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("types" -> Json.obj("id" -> typesId)))
 
   def title(title: String): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("title" -> title))
 

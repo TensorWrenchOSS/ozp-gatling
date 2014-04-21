@@ -8,7 +8,7 @@ import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
 import org.ozoneplatform.gatling.aml.feeder.Feeders._
 
 class InitializeAdminTypes extends Simulation {
-  val profilesAsJson = getStoreProfilesAsJsonString
+  val profilesAsJson = getObjectDataAsJson(PROFILE_PATH)
 
   val initCustomFields = scenario("Initializing Custom Fields")
     .feed(wordFeeder(propertyName = "cfName"))

@@ -20,6 +20,7 @@ object MarketplaceActions {
     .post("api/serviceItem")
     .headers(ActionHelpers.restApiHeaders)
     .body(StringBody(new ServiceItemBuilder()
+      .types("${typesId}")
       .title("${itemTitle}")
       .description("${itemDescription}")
       .toString()))

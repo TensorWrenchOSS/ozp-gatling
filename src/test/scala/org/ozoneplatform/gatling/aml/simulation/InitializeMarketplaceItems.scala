@@ -1,7 +1,7 @@
 package org.ozoneplatform.gatling.aml.simulation
 
-import org.ozoneplatform.gatling.aml.feeder.{Feeders, FeederHelpers}
-import org.ozoneplatform.gatling.aml.feeder.FeederUtils
+import org.ozoneplatform.gatling.aml.feeder.Feeders
+import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
 
 import io.gatling.core.Predef._
 import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
@@ -11,8 +11,9 @@ import bootstrap._
 import scala.concurrent.duration._
 
 class InitializeMarketplaceItems extends Simulation {
-  val itemCount = FeederUtils.getItemCount
-  val profilesAsJson = FeederUtils.getStoreProfilesAsJsonString
+  val itemCount = getItemCount
+  val profilesAsJson = getObjectDataAsJson(PROFILE_PATH)
+  val storeItemTypes = getObjectDataAsJson(TYPES_PATH)
 
   val submitServiceItem = exec((session: Session) => {
     val item = session("serviceItem").as[String]
@@ -33,6 +34,7 @@ class InitializeMarketplaceItems extends Simulation {
     .feed(Feeders.wordListFeeder(propertyName = "itemTitle"))
     .feed(Feeders.selectUserNameFeeder(profilesAsJson))
     .feed(Feeders.selectAdminUserFeeder(profilesAsJson, "adminUserName"))
+    .feed(Feeders.randomObjectIdFromJson(storeItemTypes, "typesId"))
     .exec(createServiceItem("${userName}"))
     .exec(submitServiceItem)
     .exec((session: Session) => { session.remove("gatling.http.cookies") })

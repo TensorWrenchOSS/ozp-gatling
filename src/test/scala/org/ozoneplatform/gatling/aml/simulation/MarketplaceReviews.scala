@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 
 class MarketplaceReviews extends Simulation {
   val rampPeriod = getRampPeriod
-  val profilesAsJson = getStoreProfilesAsJsonString
+  val profilesAsJson = getObjectDataAsJson(PROFILE_PATH)
   val userCount = getScenarioUserCount
   val reviewPercentage = getActionPercentage
 

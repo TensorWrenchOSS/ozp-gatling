@@ -4,6 +4,11 @@ class FeederUtils {
 
     public final static String DICTIONARY_FILE_PATH = 'dictionary.txt'
     public final static String CORPUS_FILE_PATH = 'wordDistro.txt'
+    public final static String SERVICE_ITEM_PATH = 'api/serviceItem'
+    public final static String PROFILE_PATH = 'api/profile'
+    public final static String TYPES_PATH = 'public/types'
+    public final static String CATEGORY_PATH = 'public/category'
+    public final static String CONTACT_TYPE_PATH = 'public/contactType'
 
     public static String getBaseUrl() {
         String baseUrl = System.properties.getProperty('baseUrl') ?: 'https://localhost:8443/marketplace/'
@@ -30,7 +35,5 @@ class FeederUtils {
 
     public static String[] getWordsDistro() { textCorpus.split() }
 
-    public static String getStoreItemsAsJsonString() { ['curl', '-XGET', '-utestAdmin1:password', baseUrl + 'api/serviceItem'].execute().text }
-
-    public static String getStoreProfilesAsJsonString() { ['curl', '-XGET', '-utestAdmin1:password', baseUrl + 'api/profile'].execute().text }
+    public static String getObjectDataAsJson(String path) { ['curl', '-XGET', '-utestAdmin1:password', baseUrl + path].execute().text }
 }

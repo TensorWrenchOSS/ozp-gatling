@@ -107,15 +107,15 @@ object Feeders {
     }
 
   /**
-   * Given a string of service items as json, return a randomly chosen service item id from that list
+   * Given a string of objects as json, return a randomly chosen item id from that list
    *
-   * @param storeItemsAsJson the response from a GET to api/serviceItem
-   * @param propertyName the key to use when inserting the id into the session (defaults to serviceItemId)
+   * @param objectsAsJson a response body where the list of objects are in a property called "data"
+   * @param propertyName the key to use when inserting the id into the session (defaults to objectId)
    * @return
    */
-  def selectServiceItemIdFeeder(storeItemsAsJson: String, propertyName: String = "serviceItemId"): Feeder[Int] =
+  def randomObjectIdFromJson(objectsAsJson: String, propertyName: String = "objectId"): Feeder[Int] =
     new Feeder[Int] {
-      val storeItems = (Json.parse(storeItemsAsJson) \ "data").as[Array[JsObject]]
+      val storeItems = (Json.parse(objectsAsJson) \ "data").as[Array[JsObject]]
 
       override def hasNext = true
 

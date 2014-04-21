@@ -1,15 +1,15 @@
 package org.ozoneplatform.gatling.aml.simulation
 
 import io.gatling.core.Predef._
-import org.ozoneplatform.gatling.aml.feeder.FeederUtils
+import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
 import org.ozoneplatform.gatling.aml.feeder.Feeders
 import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
 import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import scala.concurrent.duration._
 
 class InitializeMarketplaceUsers extends Simulation {
-  val adminCount = FeederUtils.getAdminCount
-  val userCount = FeederUtils.getUserCount
+  val adminCount = getAdminCount
+  val userCount = getUserCount
 
   val initAdminUsers = scenario("Initializing " + adminCount + " admin users.")
     .feed(Feeders.generateUserNameFeeder(isAdmin = true))
