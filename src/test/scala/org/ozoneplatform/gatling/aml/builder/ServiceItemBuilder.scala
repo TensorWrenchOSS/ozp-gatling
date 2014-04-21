@@ -11,7 +11,8 @@ class ServiceItemBuilder(jsonIn: JsObject) {
       "launchUrl" -> "https://",
       "imageLargeUrl" -> "https://",
       "imageSmallUrl" -> "https://",
-      "contacts" -> Json.arr()
+      "contacts" -> Json.arr(),
+      "categories" -> Json.arr()
     ))
   }
 
@@ -33,6 +34,9 @@ class ServiceItemBuilder(jsonIn: JsObject) {
 
   def addContact(contact: ContactBuilder): ServiceItemBuilder =
     new ServiceItemBuilder(json ++ Json.obj("contacts" -> ((json \ "contacts").as[JsArray] :+ Json.parse(contact.toString))))
+
+  def addCategory(categoryId: String): ServiceItemBuilder =
+    new ServiceItemBuilder(json ++ Json.obj("categories" -> ((json \ "categories").as[JsArray] :+ Json.obj("id" -> categoryId))))
 
   override def toString: String = Json.stringify(json)
 }

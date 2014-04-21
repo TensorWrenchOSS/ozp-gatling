@@ -23,6 +23,7 @@ object MarketplaceActions {
       .types("${typesId}")
       .title("${itemTitle}")
       .description("${itemDescription}")
+      .addCategory("${categoryId}")
       .addContact(new ContactBuilder()
         .contactType("${contactTypeId}")
         .email("${contactEmail}")

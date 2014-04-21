@@ -15,6 +15,7 @@ class InitializeMarketplaceItems extends Simulation {
   val profiles = getObjectDataAsJson(PROFILE_PATH)
   val itemTypes = getObjectDataAsJson(TYPES_PATH)
   val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
+  val categories = getObjectDataAsJson(CATEGORY_PATH)
 
   val submitServiceItem = exec((session: Session) => {
     val item = session("serviceItem").as[String]
@@ -37,6 +38,7 @@ class InitializeMarketplaceItems extends Simulation {
     .feed(Feeders.selectAdminUserFeeder(profiles, "adminUserName"))
     .feed(Feeders.randomObjectIdFromJson(itemTypes, "typesId"))
     .feed(Feeders.randomObjectIdFromJson(contactTypes, "contactTypeId"))
+    .feed(Feeders.randomObjectIdFromJson(categories, "categoryId"))
     .feed(Feeders.emailFeeder("contactEmail"))
     .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
     .exec(createServiceItem("${userName}"))
