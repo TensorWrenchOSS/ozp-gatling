@@ -2,7 +2,7 @@ package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.aml.builder.ServiceItemBuilder
+import org.ozoneplatform.gatling.aml.builder.{ContactBuilder, ServiceItemBuilder}
 import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import bootstrap._
@@ -23,6 +23,11 @@ object MarketplaceActions {
       .types("${typesId}")
       .title("${itemTitle}")
       .description("${itemDescription}")
+      .addContact(new ContactBuilder()
+        .contactType("${contactTypeId}")
+        .email("${contactEmail}")
+        .securePhone("111-1111")
+        .name("${contactName}"))
       .toString()))
     .basicAuth(userName, "password")
     .check(jsonPath("$").saveAs("serviceItem"), jsonPath("$.id").saveAs("serviceItemId"))

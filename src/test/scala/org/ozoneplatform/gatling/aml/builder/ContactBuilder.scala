@@ -16,6 +16,8 @@ class ContactBuilder(jsonIn: JsObject) {
     )
   }
 
+  def contactType(typeId: String): ContactBuilder = new ContactBuilder(json ++ Json.obj("type" -> Json.obj("id" -> typeId)))
+
   def name(name: String): ContactBuilder = new ContactBuilder(json ++ Json.obj("name" -> name))
 
   def organization(organization: String): ContactBuilder = new ContactBuilder(json ++ Json.obj("organization" -> organization))
@@ -25,4 +27,6 @@ class ContactBuilder(jsonIn: JsObject) {
   def securePhone(securePhone: String): ContactBuilder = new ContactBuilder(json ++ Json.obj("securePhone" -> securePhone))
 
   def unsecurePhone(unsecurePhone: String): ContactBuilder = new ContactBuilder(json ++ Json.obj("unsecurePhone" -> unsecurePhone))
+
+  override def toString: String = Json.stringify(json)
 }

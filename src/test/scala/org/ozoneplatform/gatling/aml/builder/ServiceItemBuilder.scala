@@ -10,7 +10,8 @@ class ServiceItemBuilder(jsonIn: JsObject) {
     this(Json.obj(
       "launchUrl" -> "https://",
       "imageLargeUrl" -> "https://",
-      "imageSmallUrl" -> "https://"
+      "imageSmallUrl" -> "https://",
+      "contacts" -> Json.arr()
     ))
   }
 
@@ -29,6 +30,9 @@ class ServiceItemBuilder(jsonIn: JsObject) {
   def approve(): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("approvalStatus" -> "Approved", "isOutside" -> true))
 
   def submit(): ServiceItemBuilder = new ServiceItemBuilder(json ++ Json.obj("approvalStatus" -> "Pending"))
+
+  def addContact(contact: ContactBuilder): ServiceItemBuilder =
+    new ServiceItemBuilder(json ++ Json.obj("contacts" -> ((json \ "contacts").as[JsArray] :+ Json.parse(contact.toString))))
 
   override def toString: String = Json.stringify(json)
 }

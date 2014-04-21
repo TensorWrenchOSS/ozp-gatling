@@ -12,8 +12,9 @@ import scala.concurrent.duration._
 
 class InitializeMarketplaceItems extends Simulation {
   val itemCount = getItemCount
-  val profilesAsJson = getObjectDataAsJson(PROFILE_PATH)
-  val storeItemTypes = getObjectDataAsJson(TYPES_PATH)
+  val profiles = getObjectDataAsJson(PROFILE_PATH)
+  val itemTypes = getObjectDataAsJson(TYPES_PATH)
+  val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
 
   val submitServiceItem = exec((session: Session) => {
     val item = session("serviceItem").as[String]
@@ -32,12 +33,15 @@ class InitializeMarketplaceItems extends Simulation {
   val initServiceItems = scenario("Initializing" + itemCount + " service items.")
     .feed(Feeders.blurbFeeder(3000, "itemDescription"))
     .feed(Feeders.wordListFeeder(propertyName = "itemTitle"))
-    .feed(Feeders.selectUserNameFeeder(profilesAsJson))
-    .feed(Feeders.selectAdminUserFeeder(profilesAsJson, "adminUserName"))
-    .feed(Feeders.randomObjectIdFromJson(storeItemTypes, "typesId"))
+    .feed(Feeders.selectUserNameFeeder(profiles))
+    .feed(Feeders.selectAdminUserFeeder(profiles, "adminUserName"))
+    .feed(Feeders.randomObjectIdFromJson(itemTypes, "typesId"))
+    .feed(Feeders.randomObjectIdFromJson(contactTypes, "contactTypeId"))
+    .feed(Feeders.emailFeeder("contactEmail"))
+    .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
     .exec(createServiceItem("${userName}"))
     .exec(submitServiceItem)
-    .exec((session: Session) => { session.remove("gatling.http.cookies") })
+    .exec((session: Session) => { session.remove("gatling.http.cookies") }) //logout the user, so we can log in the admin
     .exec(approveServiceItem)
 
   setUp(
