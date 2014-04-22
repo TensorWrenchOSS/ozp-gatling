@@ -2,7 +2,7 @@ package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.aml.builder.{ContactBuilder, ServiceItemBuilder}
+import org.ozoneplatform.gatling.aml.builder.{SearchBuilder, ContactBuilder, ServiceItemBuilder}
 import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import bootstrap._
@@ -69,8 +69,6 @@ object MarketplaceActions {
       .headers(ActionHelpers.configHeaders)
       .basicAuth("${userName}", "password")
 
-  def searchChain: ChainBuilder = exec(getConfig).exec(searchMarketplace)
-
   /**
    * Gets search results from the session, chooses the first item and after a pause (for the user to "think"), performs
    * the passed in action, with an optional parameter to perform it only a certain percentage of the time. Note that the
@@ -95,6 +93,22 @@ object MarketplaceActions {
       }
       .pause(thinkFor seconds)
       .randomSwitch(actionPercent -> exec(action))
+    }
+
+  def getSearchItemAndDoActions(actions: ChainBuilder, thinkFor: Int = 30): ChainBuilder =
+    doIf(session => session("searchResults").as[List[JsObject]].size > 0) {
+      exec((session: Session) => {
+        val results = session("searchResults").as[List[JsObject]]
+        val firstResult = results.head
+        val itemId = firstResult \ "id"
+
+        session.set("serviceItemId", itemId).set("searchResults", results.tail)
+      })
+        .group("Quick View") {
+        serviceItemGroup
+      }
+        .pause(thinkFor seconds)
+        .exec(actions)
     }
 
   def serviceItemGroup: ChainBuilder =

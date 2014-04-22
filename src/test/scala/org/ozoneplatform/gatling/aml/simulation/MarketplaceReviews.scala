@@ -7,6 +7,7 @@ import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
 import bootstrap._
 import scala.concurrent.duration._
+import org.ozoneplatform.gatling.aml.builder.SearchBuilder
 
 class MarketplaceReviews extends Simulation {
   val rampPeriod = getRampPeriod
@@ -18,9 +19,10 @@ class MarketplaceReviews extends Simulation {
     .feed(Feeders.selectUserNameFeeder(profilesAsJson))
     .repeat(10) {
       feed(Feeders.wordListFeeder(propertyName = "queryString"))
-        .group("Search Page") {
-          searchChain
-        }
+        .exec(new SearchBuilder()
+          .basicAuth("${userName}", "password")
+          .searchTerm("${queryString}")
+          .search)
         .pause(3 seconds)
         .repeat(3) {
           feed(Feeders.blurbFeeder(propertyName = "itemComment"))
