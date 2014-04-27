@@ -136,7 +136,7 @@ object MarketplaceActions {
 
   def getRequiredItems: ActionBuilder =
     http("Get Required Items")
-      .get("public/serviceItem/getRequiredItems/" + "${serviceItemId}")
+      .get("api/serviceItem" + "${serviceItemId}" + "requiredServiceItems")
       .queryParam("accessAlertShown", "true")
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
