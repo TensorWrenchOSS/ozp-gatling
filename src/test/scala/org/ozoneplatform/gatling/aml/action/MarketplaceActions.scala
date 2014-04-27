@@ -85,7 +85,7 @@ object MarketplaceActions {
         val results = session("searchResults").as[List[JsObject]]
         val firstResult = results.head
         val itemId = firstResult \ "id"
-  
+
         session.set("serviceItemId", itemId).set("searchResults", results.tail)
       })
       .group("Quick View") {
@@ -115,7 +115,9 @@ object MarketplaceActions {
     exec(getServiceItem)
       .exec(getItemActivities)
       .exec(getRequiredItems)
+      .exec(getRequiringItems)
       .exec(getItemComments)
+      .exec(getScoreCardResponses)
       .exec(getItemTags)
 
   def getServiceItem: ActionBuilder =
@@ -136,7 +138,21 @@ object MarketplaceActions {
 
   def getRequiredItems: ActionBuilder =
     http("Get Required Items")
-      .get("api/serviceItem" + "${serviceItemId}" + "requiredServiceItems")
+      .get("api/serviceItem/" + "${serviceItemId}" + "/requiredServiceItems")
+      .queryParam("accessAlertShown", "true")
+      .headers(ActionHelpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getRequiringItems: ActionBuilder =
+    http("Get Requiring Items")
+      .get("api/serviceItem/" + "${serviceItemId}" + "/requiringServiceItems")
+      .queryParam("accessAlertShown", "true")
+      .headers(ActionHelpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getScoreCardResponses: ActionBuilder =
+    http("Get Scorecard Responses")
+      .get("scoreCardItemResponse/scoreCardResponsesByServiceItem/" + "${serviceItemId}")
       .queryParam("accessAlertShown", "true")
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
