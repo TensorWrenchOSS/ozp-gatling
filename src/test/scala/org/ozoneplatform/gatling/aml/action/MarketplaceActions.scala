@@ -113,11 +113,9 @@ object MarketplaceActions {
 
   def serviceItemGroup: ChainBuilder =
     exec(getServiceItem)
-      .exec(getItemActivities)
       .exec(getRequiredItems)
       .exec(getRequiringItems)
       .exec(getItemComments)
-      .exec(getScoreCardResponses)
       .exec(getItemTags)
 
   def getServiceItem: ActionBuilder =
