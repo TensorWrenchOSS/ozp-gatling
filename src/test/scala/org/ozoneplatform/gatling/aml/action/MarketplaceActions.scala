@@ -122,7 +122,7 @@ object MarketplaceActions {
 
   def getServiceItem: ActionBuilder =
     http("Request a service item")
-      .get("api/serviceItem/" + "${serviceItemId}")
+      .get("public/serviceItem/" + "${serviceItemId}")
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
