@@ -89,7 +89,7 @@ object MarketplaceActions {
         session.set("serviceItemId", itemId).set("searchResults", results.tail)
       })
       .group("Quick View") {
-        serviceItemGroup
+        serviceItemGroupUser
       }
       .pause(thinkFor seconds)
       .randomSwitch(actionPercent -> exec(action))
@@ -105,13 +105,13 @@ object MarketplaceActions {
         session.set("serviceItemId", itemId).set("searchResults", results.tail)
       })
         .group("Quick View") {
-        serviceItemGroup
+        serviceItemGroupUser
       }
         .pause(thinkFor seconds)
         .exec(actions)
     }
 
-  def serviceItemGroup: ChainBuilder =
+  def serviceItemGroupUser: ChainBuilder =
     exec(getServiceItem)
       .exec(getRequiredItems)
       .exec(getRequiringItems)
