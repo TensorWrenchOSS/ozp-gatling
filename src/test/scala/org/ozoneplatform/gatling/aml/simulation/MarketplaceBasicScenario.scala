@@ -27,25 +27,25 @@ class MarketplaceBasicScenario extends Simulation {
       .searchTerm("${queryString}")
       .highestRated()
       .search)
-  
+
   val reviewChain = feed(Feeders.blurbFeeder(propertyName = "itemComment"))
     .feed(Feeders.itemRatingFeeder())
     .pause(30 seconds)
     .exec(reviewServiceItem)
-  
+
   val tagChain = feed(Feeders.wordFeeder(words = tagList, propertyName = "itemTag"))
     .pause(5 seconds)
     .exec(tagServiceItem)
 
   val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
     .feed(Feeders.selectUserNameFeeder(profilesAsJson))
-    .exec(getConfig)
     .repeat(10) {
-      randomSwitch(52 -> browseForListings, 48 -> searchForListings)
-      .pause(10 seconds)
-      .repeat(5) {
-        exec(getSearchItemAndDoActions(randomSwitch(2 -> reviewChain, 4 -> tagChain)))
-      }
+      exec(getConfig)
+        .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
+        .pause(10 seconds)
+        .repeat(5) {
+          exec(getSearchItemAndDoActions(randomSwitch(2 -> reviewChain, 4 -> tagChain)))
+        }
     }
 
   setUp(
