@@ -147,7 +147,20 @@ object Feeders {
       override def next(): Map[String, String] = {
         val userNumber = randInt(1, userCount)
 
-        Map(propertyName -> (if(isAdmin) "Admin" else "User") + userNumber.toString)
+        Map(propertyName -> ((if(isAdmin) "Admin" else "User") + userNumber))
+      }
+    }
+
+  def userFeeder(userCount: Int, isAdmin: Boolean = false, propertyName: String = "userName"): Feeder[String] =
+    new Feeder[String] {
+      var counter = 0
+
+      override def hasNext = true
+
+      override  def next(): Map[String, String] = {
+        counter += 1
+
+        Map(propertyName -> ((if(isAdmin) "Admin" else "User") + counter))
       }
     }
 }

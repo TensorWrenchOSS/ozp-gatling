@@ -12,11 +12,11 @@ class InitializeMarketplaceUsers extends Simulation {
   val userCount = getUserCount
 
   val initAdminUsers = scenario("Initializing " + adminCount + " admin users.")
-    .feed(Feeders.randomUserFeeder(adminCount, isAdmin =  true))
+    .feed(Feeders.userFeeder(adminCount, isAdmin =  true))
     .exec(createUser)
 
   val initUsers = scenario("Initializing " + userCount + " non-admin users")
-    .feed(Feeders.randomUserFeeder(userCount))
+    .feed(Feeders.userFeeder(userCount))
     .exec(createUser)
 
   setUp(
