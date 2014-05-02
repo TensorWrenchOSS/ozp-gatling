@@ -8,12 +8,12 @@ import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
 import org.ozoneplatform.gatling.aml.feeder.Feeders._
 
 class InitializeAdminTypes extends Simulation {
-  val profilesAsJson = getObjectDataAsJson(PROFILE_PATH)
+  val adminCount = getAdminCount
 
   val initCustomFields = scenario("Initializing Custom Fields")
     .feed(wordFeeder(propertyName = "cfName"))
     .feed(wordFeeder(propertyName = "cfLabel"))
-    .feed(selectAdminUserFeeder(profilesAsJson, "adminUserName"))
+    .feed(randomUserFeeder(adminCount, isAdmin = true, propertyName = "adminUserName"))
     .exec(createTextCustomField)
     .feed(wordFeeder(propertyName = "cfName"))
     .feed(wordFeeder(propertyName = "cfLabel"))

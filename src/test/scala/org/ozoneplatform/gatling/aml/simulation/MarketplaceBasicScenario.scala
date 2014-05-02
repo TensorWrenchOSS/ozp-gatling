@@ -10,7 +10,7 @@ import org.ozoneplatform.gatling.aml.builder.SearchBuilder
 import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 
 class MarketplaceBasicScenario extends Simulation {
-  val profilesAsJson = getObjectDataAsJson(PROFILE_PATH)
+  val userCount = getUserCount
   val userLoops = getScenarioUserCount
   val rampPeriod = getRampPeriod
 
@@ -38,7 +38,7 @@ class MarketplaceBasicScenario extends Simulation {
     .exec(tagServiceItem)
 
   val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
-    .feed(Feeders.selectUserNameFeeder(profilesAsJson))
+    .feed(Feeders.randomUserFeeder(userCount))
     .repeat(10) {
       exec(getConfig)
         .randomSwitch(52 -> browseForListings, 48 -> searchForListings)

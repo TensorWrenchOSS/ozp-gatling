@@ -12,7 +12,8 @@ import scala.concurrent.duration._
 
 class InitializeMarketplaceItems extends Simulation {
   val itemCount = getItemCount
-  val profiles = getObjectDataAsJson(PROFILE_PATH)
+  val adminCount = getAdminCount
+  val userCount = getUserCount
   val itemTypes = getObjectDataAsJson(TYPES_PATH)
   val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
   val categories = getObjectDataAsJson(CATEGORY_PATH)
@@ -34,8 +35,8 @@ class InitializeMarketplaceItems extends Simulation {
   val initServiceItems = scenario("Initializing" + itemCount + " service items.")
     .feed(Feeders.blurbFeeder(3000, "itemDescription"))
     .feed(Feeders.wordListFeeder(propertyName = "itemTitle"))
-    .feed(Feeders.selectUserNameFeeder(profiles))
-    .feed(Feeders.selectAdminUserFeeder(profiles, "adminUserName"))
+    .feed(Feeders.randomUserFeeder(userCount))
+    .feed(Feeders.randomUserFeeder(adminCount, isAdmin =  true, propertyName = "adminUserName"))
     .feed(Feeders.randomObjectIdFromJson(itemTypes, "typesId"))
     .feed(Feeders.randomObjectIdFromJson(contactTypes, "contactTypeId"))
     .feed(Feeders.randomObjectIdFromJson(categories, "categoryId"))

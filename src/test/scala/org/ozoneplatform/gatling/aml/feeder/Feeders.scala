@@ -138,4 +138,16 @@ object Feeders {
 
       override def next(): Map[String, String] = Map(propertyName -> (if (isAdmin) "Admin" + baseString()  else baseString()))
     }
+
+  def randomUserFeeder(userCount: Int, isAdmin: Boolean = false, propertyName: String = "userName"): Feeder[String] =
+    new Feeder[String] {
+
+      override def hasNext = true
+
+      override def next(): Map[String, String] = {
+        val userNumber = randInt(1, userCount)
+
+        Map(propertyName -> (if(isAdmin) "Admin" else "User") + userNumber)
+      }
+    }
 }
