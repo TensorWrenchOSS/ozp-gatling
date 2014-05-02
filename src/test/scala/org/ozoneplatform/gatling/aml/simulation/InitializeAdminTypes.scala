@@ -30,6 +30,8 @@ class InitializeAdminTypes extends Simulation {
     .exec(createDropDownCustomField)
     .feed(wordFeeder(propertyName = "contactTypeTitle"))
     .exec(createContactType)
+    .feed(wordFeeder(propertyName = "categoryTitle"))
+    .exec(createCategory)
 
 
   setUp(
