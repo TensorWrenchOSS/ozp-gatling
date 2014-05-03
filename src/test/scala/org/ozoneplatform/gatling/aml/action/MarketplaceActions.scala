@@ -46,7 +46,7 @@ object MarketplaceActions {
     .body(StringBody("[{\"title\": \"" +  "${itemTag}" + "\"}]"))
     .basicAuth("${userName}", "password")
     //TODO: handle tag that already exists on the item
-    .check(status.in(List(201,400)))
+    .check(status.in(List(201, 200, 400)))
 
   def reviewServiceItem: ActionBuilder = http("Post a review on a serviceItem")
     .post("api/serviceItem/" + "${serviceItemId}" + "/itemComment")
