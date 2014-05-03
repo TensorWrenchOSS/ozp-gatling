@@ -43,7 +43,7 @@ object MarketplaceActions {
   def tagServiceItem: ActionBuilder = http("Tag a service item")
     .post("api/serviceItem/" + "${serviceItemId}" + "/tag")
     .headers(ActionHelpers.restApiHeaders)
-    .body(StringBody("{\"title\": \"" +  "${itemTag}" + "\"}"))
+    .body(StringBody("[{\"title\": \"" +  "${itemTag}" + "\"}]"))
     .basicAuth("${userName}", "password")
     //TODO: handle tag that already exists on the item
     .check(status.in(List(201,400)))
