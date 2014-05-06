@@ -5,6 +5,7 @@ import io.gatling.http.Predef._
 import play.api.libs.json.{Json, JsObject}
 import io.gatling.core.Predef._
 import io.gatling.core.action.builder.ActionBuilder
+import org.ozoneplatform.gatling.aml.action.ActionHelpers
 
 class SearchBuilder(requestIn: HttpRequestBuilder) {
 
@@ -13,10 +14,10 @@ class SearchBuilder(requestIn: HttpRequestBuilder) {
   def this() {
     this(http("Make a search request")
       .get("public/search")
-      .check(jsonPath("$").transform(_.map(jsonString => {
-        val results = Json.parse(jsonString.toString)
-        (results \ "data").as[List[JsObject]]
-      })).saveAs("searchResults"))
+      .headers(ActionHelpers.searchHeaders)
+      .check(bodyString
+        .transform(results => (Json.parse(results) \ "data").as[List[JsObject]])
+        .saveAs("searchResults"))
     )
   }
 
