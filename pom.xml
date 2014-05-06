@@ -10,8 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gatling.version>2.0.0-M3a</gatling.version>
-        <gatlingMvnPlugin.version>2.0.0-SNAPSHOT</gatlingMvnPlugin.version>
+        <gatling.version>2.0.0-SNAPSHOT</gatling.version>
     </properties>
 
     <repositories>
@@ -39,7 +38,7 @@
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>${gatlingMvnPlugin.version}</version>
+            <version>${gatling.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -107,7 +106,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>${gatlingMvnPlugin.version}</version>
+                <version>${gatling.version}</version>
                 <executions>
                     <execution>
                         <phase>test</phase>

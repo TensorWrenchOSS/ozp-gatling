@@ -16,15 +16,15 @@ class MarketplaceBasicScenario extends Simulation {
   val tagList = FeederHelpers.randWordSet(count = 500)
 
   val browseForListings = randomSwitch(
-    33.3 -> exec(new SearchBuilder().allListings().search),
-    33.3 -> exec(new SearchBuilder().newArrivals().search),
-    33.3 -> exec(new SearchBuilder().highestRated().search)
+    33.3 -> exec(new SearchBuilder().allListings().maxResults(24).search),
+    33.3 -> exec(new SearchBuilder().newArrivals().maxResults(24).search),
+    33.3 -> exec(new SearchBuilder().highestRated().maxResults(24).search)
   )
 
   val searchForListings = feed(Feeders.wordListFeeder(propertyName = "queryString"))
     .exec(new SearchBuilder()
       .searchTerm("${queryString}")
-      .highestRated()
+      .maxResults(24)
       .search)
 
   val reviewChain = feed(Feeders.blurbFeeder(propertyName = "itemComment"))

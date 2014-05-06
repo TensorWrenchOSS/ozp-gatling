@@ -25,6 +25,8 @@ class SearchBuilder(requestIn: HttpRequestBuilder) {
 
   def searchTerm(term: String): SearchBuilder = new SearchBuilder(request.queryParam("queryString", term))
 
+  def maxResults(max: Int): SearchBuilder = new SearchBuilder(request.queryParam("max", max))
+
   def newArrivals(): SearchBuilder = this.sortBy("approvedDate").desc()
 
   def highestRated(): SearchBuilder = this.sortBy("avgRate").desc()
