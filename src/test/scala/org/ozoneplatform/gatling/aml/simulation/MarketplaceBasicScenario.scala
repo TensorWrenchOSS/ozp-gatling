@@ -4,7 +4,6 @@ import org.ozoneplatform.gatling.aml.feeder.{FeederHelpers, Feeders}
 import io.gatling.core.Predef._
 import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
 import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
-import bootstrap._
 import scala.concurrent.duration._
 import org.ozoneplatform.gatling.aml.builder.SearchBuilder
 import org.ozoneplatform.gatling.aml.action.ActionHelpers._
@@ -17,9 +16,9 @@ class MarketplaceBasicScenario extends Simulation {
   val tagList = FeederHelpers.randWordSet(count = 500)
 
   val browseForListings = randomSwitch(
-    exec(new SearchBuilder().allListings().search),
-    exec(new SearchBuilder().newArrivals().search),
-    exec(new SearchBuilder().highestRated().search)
+    33.3 -> exec(new SearchBuilder().allListings().search),
+    33.3 -> exec(new SearchBuilder().newArrivals().search),
+    33.3 -> exec(new SearchBuilder().highestRated().search)
   )
 
   val searchForListings = feed(Feeders.wordListFeeder(propertyName = "queryString"))
@@ -41,14 +40,14 @@ class MarketplaceBasicScenario extends Simulation {
     .feed(Feeders.randomUserFeeder(userCount))
     .repeat(10) {
       exec(getConfig)
-        .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
+        .randomSwitch(52.0 -> browseForListings, 48.0 -> searchForListings)
         .pause(10 seconds)
         .repeat(5) {
-          exec(getSearchItemAndDoActions(randomSwitch(2 -> reviewChain, 4 -> tagChain)))
+          exec(getSearchItemAndDoActions(randomSwitch(2.0 -> reviewChain, 4.0 -> tagChain)))
         }
     }
 
   setUp(
-    basicUserScenario.inject(ramp(userLoops.toInt users) over (rampPeriod.toInt seconds))
+    basicUserScenario.inject(rampUsers(userLoops.toInt).over(rampPeriod.toInt))
   ).protocols(restHttpProtocol)
 }

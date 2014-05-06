@@ -8,11 +8,17 @@
     <artifactId>aml-gatling</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <gatling.version>2.0.0-M3a</gatling.version>
+        <gatlingMvnPlugin.version>2.0.0-SNAPSHOT</gatlingMvnPlugin.version>
+    </properties>
+
     <repositories>
         <repository>
             <id>excilys</id>
             <name>Excilys Repository</name>
-            <url>http://repository.excilys.com/content/groups/public</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
             <id>typesafe</id>
@@ -24,21 +30,16 @@
     <pluginRepositories>
         <pluginRepository>
             <id>excilys</id>
-            <name>Excilys Repository</name>
-            <url>http://repository.excilys.com/content/groups/public</url>
+            <name>Excilys Snapshot Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gatling.version>2.0.0-M3a</gatling.version>
-    </properties>
 
     <dependencies>
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>${gatling.version}</version>
+            <version>${gatlingMvnPlugin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -106,7 +107,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>${gatling.version}</version>
+                <version>${gatlingMvnPlugin.version}</version>
                 <executions>
                     <execution>
                         <phase>test</phase>

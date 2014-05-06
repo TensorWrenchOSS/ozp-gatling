@@ -2,13 +2,12 @@ package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.aml.builder.{SearchBuilder, ContactBuilder, ServiceItemBuilder}
+import org.ozoneplatform.gatling.aml.builder.{ContactBuilder, ServiceItemBuilder}
 import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
-import bootstrap._
 import io.gatling.core.structure.ChainBuilder
 import scala.concurrent.duration._
-import io.gatling.http.request.builder.PostHttpRequestBuilder
+import io.gatling.http.request.builder.HttpRequestWithParamsBuilder
 
 object MarketplaceActions {
   def createUser: ActionBuilder = http("Login and create a profile by making a simple request")
@@ -59,7 +58,7 @@ object MarketplaceActions {
     .queryParam("queryString", "${queryString}")
     .basicAuth("${userName}", "password")
     .check(jsonPath("$").transform(_.map(jsonString => {
-      val results = Json.parse(jsonString)
+      val results = Json.parse(jsonString.toString)
       (results \ "data").as[List[JsObject]]
     })).saveAs("searchResults"))
 
@@ -79,7 +78,7 @@ object MarketplaceActions {
    * @param actionPercent
    * @return
    */
-  def getSearchItemAndDoAction(action: ActionBuilder, actionPercent: Int = 100, thinkFor: Int = 30): ChainBuilder =
+  def getSearchItemAndDoAction(action: ActionBuilder, actionPercent: Double = 100, thinkFor: Int = 30): ChainBuilder =
     doIf(session => session("searchResults").as[List[JsObject]].size > 0) {
       exec((session: Session) => {
         val results = session("searchResults").as[List[JsObject]]
@@ -168,14 +167,14 @@ object MarketplaceActions {
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
-  def createAdminTypeBase(url: String): PostHttpRequestBuilder =
+  def createAdminTypeBase(url: String): HttpRequestWithParamsBuilder =
     http("Manage Admin Type: " + url)
       .post(url)
       .headers(ActionHelpers.adminTypeHeaders)
       .basicAuth("${adminUserName}", "password")
       .queryParam("accessAlertShown", "true")
 
-  def customFieldDefinitionBase: PostHttpRequestBuilder =
+  def customFieldDefinitionBase: HttpRequestWithParamsBuilder =
     createAdminTypeBase("customFieldDefinition/save")
       .param("allTypes", "true")
       .param("section", "typeProperties")

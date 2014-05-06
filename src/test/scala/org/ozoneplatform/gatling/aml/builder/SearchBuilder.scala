@@ -1,12 +1,12 @@
 package org.ozoneplatform.gatling.aml.builder
 
-import io.gatling.http.request.builder.GetHttpRequestBuilder
+import io.gatling.http.request.builder.HttpRequestBuilder
 import io.gatling.http.Predef._
 import play.api.libs.json.{Json, JsObject}
 import io.gatling.core.Predef._
 import io.gatling.core.action.builder.ActionBuilder
 
-class SearchBuilder(requestIn: GetHttpRequestBuilder) {
+class SearchBuilder(requestIn: HttpRequestBuilder) {
 
   val request = requestIn
 
@@ -14,7 +14,7 @@ class SearchBuilder(requestIn: GetHttpRequestBuilder) {
     this(http("Make a search request")
       .get("public/search")
       .check(jsonPath("$").transform(_.map(jsonString => {
-        val results = Json.parse(jsonString)
+        val results = Json.parse(jsonString.toString)
         (results \ "data").as[List[JsObject]]
       })).saveAs("searchResults"))
     )
