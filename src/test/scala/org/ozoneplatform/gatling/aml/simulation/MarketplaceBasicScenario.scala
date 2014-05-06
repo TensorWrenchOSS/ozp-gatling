@@ -31,11 +31,11 @@ class MarketplaceBasicScenario extends Simulation {
   val reviewChain = feed(Feeders.blurbFeeder(propertyName = "itemComment"))
     .feed(Feeders.itemRatingFeeder())
     .pause(30 seconds)
-    .exec(reviewServiceItem)
+    //.exec(reviewServiceItem)
 
   val tagChain = feed(Feeders.wordFeeder(words = tagList, propertyName = "itemTag"))
     .pause(5 seconds)
-    .exec(tagServiceItem)
+    //.exec(tagServiceItem)
 
   val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
     .feed(Feeders.randomUserFeeder(userCount))
