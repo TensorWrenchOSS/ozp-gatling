@@ -44,13 +44,21 @@ object MarketplaceActions {
     .headers(ActionHelpers.restApiHeaders)
     .body(StringBody("[{\"title\": \"" +  "${itemTag}" + "\"}]"))
     .basicAuth("${userName}", "password")
-    //TODO: handle tag that already exists on the item
-    .check(status.in(List(201, 200, 400)))
 
   def reviewServiceItem: ActionBuilder = http("Post a review on a serviceItem")
-    .post("api/serviceItem/" + "${serviceItemId}" + "/itemComment")
-    .headers(ActionHelpers.restApiHeaders)
-    .body(StringBody("{\"text\": \"" + "${itemComment}" + "\", \"rate\": " + "${itemRating}" + "}"))
+    //This is the legacy form based request which is still used in the quick view
+    .post("itemComment/saveItemComment")
+    //This is the REST API which is not being used yet
+    //.post("api/serviceItem/" + "${serviceItemId}" + "/itemComment")
+    //.headers(ActionHelpers.restApiHeaders)
+    //This is the request body for the REST API - not in use yet
+    //.body(StringBody("{\"text\": \"" + "${itemComment}" + "\", \"rate\": " + "${itemRating}" + "}"))
+    //The following queryParams can be removed when we switch to the REST API
+    .queryParam("commentTextInput", "${itemComment}")
+    .queryParam("serviceItemId", "${serviceItemId}")
+    .queryParam("text", "${itemComment}")
+    .queryParam("userRate", "${itemRating}")
+    .queryParam("newUserRating", "${itemRating}")
     .basicAuth("${userName}", "password")
 
   def searchMarketplace: ActionBuilder = http("Make a search request")
@@ -70,31 +78,14 @@ object MarketplaceActions {
 
   /**
    * Gets search results from the session, chooses the first item and after a pause (for the user to "think"), performs
-   * the passed in action, with an optional parameter to perform it only a certain percentage of the time. Note that the
-   * tail of the search results is inserted back into the session, so multiple calls of this method between searches
-   * will subsequently perform the action on the next item in the list.
+   * the passed in chain. Note that the tail of the search results is inserted back into the session, so subsequent calls
+   * to this method between searches will perform the chain on the next search result and so on.
    *
-   * @param action
-   * @param actionPercent
+   * @param chain
+   * @param thinkFor
    * @return
    */
-  def getSearchItemAndDoAction(action: ActionBuilder, actionPercent: Double = 100, thinkFor: Int = 30): ChainBuilder =
-    doIf(session => session("searchResults").as[List[JsObject]].size > 0) {
-      exec((session: Session) => {
-        val results = session("searchResults").as[List[JsObject]]
-        val firstResult = results.head
-        val itemId = firstResult \ "id"
-
-        session.set("serviceItemId", itemId).set("searchResults", results.tail)
-      })
-      .group("Quick View") {
-        serviceItemGroupUser
-      }
-      .pause(thinkFor seconds)
-      .randomSwitch(actionPercent -> exec(action))
-    }
-
-  def getSearchItemAndDoActions(actions: ChainBuilder, thinkFor: Int = 30): ChainBuilder =
+  def getSearchItemAndDoChain(chain: ChainBuilder): ChainBuilder =
     doIf(session => session("searchResults").as[List[JsObject]].size > 0) {
       exec((session: Session) => {
         val results = session("searchResults").as[List[JsObject]]
@@ -106,8 +97,8 @@ object MarketplaceActions {
         .group("Quick View") {
         serviceItemGroupUser
       }
-        .pause(thinkFor seconds)
-        .exec(actions)
+        .pause(30 seconds, 1 minutes) //pause to review the item
+        .exec(chain)
     }
 
   def serviceItemGroupUser: ChainBuilder =

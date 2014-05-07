@@ -9,7 +9,7 @@ object Feeders {
 
   /**
    * returns a randomly generated email
-   * 
+   *
    * @param propertyName the key used to store the value in the session
    * @return
    */
@@ -67,11 +67,11 @@ object Feeders {
    * @param propertyName the key to use in the session when storing the value
    * @return
    */
-  def itemRatingFeeder(propertyName: String = "itemRating"): Feeder[Float] =
-    new Feeder[Float] {
+  def itemRatingFeeder(propertyName: String = "itemRating"): Feeder[Int] =
+    new Feeder[Int] {
       override def hasNext = true
 
-      override def next(): Map[String, Float] = Map(propertyName -> randInt(1, 5).asInstanceOf[Float])
+      override def next(): Map[String, Int] = Map(propertyName -> randInt(1, 5))
     }
 
   /**
@@ -124,7 +124,7 @@ object Feeders {
 
   /**
    * Generates a random username
-   * 
+   *
    * @param isAdmin whether or not this user is an Admin (defaults to false)
    * @param propertyName the key to use when inserting the username into the session (defaults to userName)
    * @return
