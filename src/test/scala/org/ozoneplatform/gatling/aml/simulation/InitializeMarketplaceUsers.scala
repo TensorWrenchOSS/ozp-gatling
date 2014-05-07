@@ -20,7 +20,7 @@ class InitializeMarketplaceUsers extends Simulation {
     .exec(createUser)
 
   setUp(
-    initAdminUsers.inject(rampUsers(adminCount.toInt).over(adminCount.toInt)),
-    initUsers.inject(nothingFor(30 seconds), rampUsers(userCount.toInt).over(userCount.toInt))
+    initAdminUsers.inject(rampUsers(adminCount).over(adminCount)),
+    initUsers.inject(nothingFor(30 seconds), rampUsers(userCount).over(userCount))
   ).protocols(restHttpProtocol)
 }

@@ -46,6 +46,6 @@ class InitializeMarketplaceItems extends Simulation {
     .exec(approveServiceItem)
 
   setUp(
-    initServiceItems.inject(rampUsers(5).over(itemCount.toInt))
+    initServiceItems.inject(rampUsers(itemCount).over(itemCount))
   ).protocols(restHttpProtocol)
 }

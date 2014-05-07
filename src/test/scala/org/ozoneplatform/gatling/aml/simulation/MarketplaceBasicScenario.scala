@@ -49,6 +49,6 @@ class MarketplaceBasicScenario extends Simulation {
     }
 
   setUp(
-    basicUserScenario.inject(rampUsers(userLoops.toInt).over(rampPeriod.toInt))
+    basicUserScenario.inject(rampUsers(userLoops).over(rampPeriod))
   ).protocols(restHttpProtocol)
 }

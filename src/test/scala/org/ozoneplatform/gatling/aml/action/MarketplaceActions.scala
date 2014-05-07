@@ -7,6 +7,7 @@ import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.request.builder.HttpRequestWithParamsBuilder
+import scala.concurrent.duration._
 
 object MarketplaceActions {
   def createUser: ActionBuilder = http("Login and create a profile by making a simple request")
@@ -29,14 +30,16 @@ object MarketplaceActions {
         .name("${contactName}"))
       .toString()))
     .basicAuth(userName, "password")
-    .check(jsonPath("$").saveAs("serviceItem"), jsonPath("$.id").saveAs("serviceItemId"))
+    .check(bodyString.saveAs("serviceItem"),
+           bodyString.transform(results => Json.parse(results) \ "id").saveAs("serviceItemId"))
 
   def modifyServiceItem(userName: String): ActionBuilder = http("Modify a service item")
     .put("api/serviceItem/" + "${serviceItemId}")
     .headers(ActionHelpers.restApiHeaders)
     .body(StringBody("${serviceItem}"))
     .basicAuth(userName, "password")
-    .check(jsonPath("$").saveAs("serviceItem"), jsonPath("$.id").saveAs("serviceItemId"))
+    .check(bodyString.saveAs("serviceItem"),
+           bodyString.transform(results => Json.parse(results) \ "id").saveAs("serviceItemId"))
 
   def tagServiceItem: ActionBuilder = http("Tag a service item")
     .post("api/serviceItem/" + "${serviceItemId}" + "/tag")
@@ -59,16 +62,6 @@ object MarketplaceActions {
     .queryParam("userRate", "${itemRating}")
     .queryParam("newUserRating", "${itemRating}")
     .basicAuth("${userName}", "password")
-
-  /*
-  def searchMarketplace: ActionBuilder = http("Make a search request")
-    .get("public/search")
-    .queryParam("queryString", "${queryString}")
-    .basicAuth("${userName}", "password")
-    .check(jsonPath("$").transform(_.map(jsonString => {
-      val results = Json.parse(jsonString.toString)
-      (results \ "data").as[List[JsObject]]
-    })).saveAs("searchResults"))*/
 
   def getConfig: ActionBuilder =
     http("Request config.js")
