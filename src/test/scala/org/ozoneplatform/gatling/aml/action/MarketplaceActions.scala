@@ -6,7 +6,6 @@ import org.ozoneplatform.gatling.aml.builder.{ContactBuilder, ServiceItemBuilder
 import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import io.gatling.core.structure.ChainBuilder
-import scala.concurrent.duration._
 import io.gatling.http.request.builder.HttpRequestWithParamsBuilder
 
 object MarketplaceActions {
@@ -61,6 +60,7 @@ object MarketplaceActions {
     .queryParam("newUserRating", "${itemRating}")
     .basicAuth("${userName}", "password")
 
+  /*
   def searchMarketplace: ActionBuilder = http("Make a search request")
     .get("public/search")
     .queryParam("queryString", "${queryString}")
@@ -68,7 +68,7 @@ object MarketplaceActions {
     .check(jsonPath("$").transform(_.map(jsonString => {
       val results = Json.parse(jsonString.toString)
       (results \ "data").as[List[JsObject]]
-    })).saveAs("searchResults"))
+    })).saveAs("searchResults"))*/
 
   def getConfig: ActionBuilder =
     http("Request config.js")
@@ -82,11 +82,10 @@ object MarketplaceActions {
    * to this method between searches will perform the chain on the next search result and so on.
    *
    * @param chain
-   * @param thinkFor
    * @return
    */
   def getSearchItemAndDoChain(chain: ChainBuilder): ChainBuilder =
-    doIf(session => session("searchResults").as[List[JsObject]].size > 0) {
+    doIf((session: Session) => session("searchResults").as[List[JsObject]].size > 0) {
       exec((session: Session) => {
         val results = session("searchResults").as[List[JsObject]]
         val firstResult = results.head

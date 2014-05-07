@@ -7,7 +7,6 @@ import io.gatling.core.Predef._
 import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
 import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import org.ozoneplatform.gatling.aml.builder.ServiceItemBuilder
-import scala.concurrent.duration._
 
 class InitializeMarketplaceItems extends Simulation {
   val itemCount = getItemCount
