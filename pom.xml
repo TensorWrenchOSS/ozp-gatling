@@ -113,10 +113,25 @@
                         <goals>
                             <goal>execute</goal>
                         </goals>
-                        <configuration>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                  <jvmArgs>
+                    <jvmArg>-server</jvmArg>
+                    <jvmArg>-XX:+UseThreadPriorities</jvmArg>
+                    <jvmArg>-XX:ThreadPriorityPolicy=42</jvmArg>
+                    <jvmArg>-Xms1024m</jvmArg>
+                    <jvmArg>-Xmx4096m</jvmArg>
+                    <jvmArg>-Xmn256m</jvmArg>
+                    <jvmArg>-XX:+HeapDumpOnOutOfMemoryError</jvmArg>
+                    <jvmArg>-XX:+AggressiveOpts</jvmArg>
+                    <jvmArg>-XX:+OptimizeStringConcat</jvmArg>
+                    <jvmArg>-XX:+UseFastAccessorMethods</jvmArg>
+                    <jvmArg>-XX:+UseParNewGC</jvmArg>
+                    <jvmArg>-XX:+UseConcMarkSweepGC</jvmArg>
+                    <jvmArg>-XX:+CMSParallelRemarkEnabled</jvmArg>
+                  </jvmArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>
