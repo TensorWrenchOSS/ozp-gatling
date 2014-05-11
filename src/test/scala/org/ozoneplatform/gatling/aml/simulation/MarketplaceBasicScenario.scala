@@ -44,7 +44,7 @@ class MarketplaceBasicScenario extends Simulation {
         .randomSwitch(52.0 -> browseForListings, 48.0 -> searchForListings)
         .repeat(5) {
           pause(3 seconds, 12 seconds) //pause to scan and choose search result
-          .exec(getSearchItemAndDoChain(randomSwitch(0.25 -> reviewChain, 0.5 -> tagChain)))
+          .exec(getSearchItemAndDoChain(randomSwitch(0.25 -> reviewChain, 0.5 -> tagChain, 0.5 -> exec(addToOwf))))
         }
     }
 

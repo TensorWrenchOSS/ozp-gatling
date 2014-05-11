@@ -63,6 +63,13 @@ object MarketplaceActions {
     .queryParam("newUserRating", "${itemRating}")
     .basicAuth("${userName}", "password")
 
+  def addToOwf: ActionBuilder = http("Add Listing to Owf")
+    .post("relationship/getOWFRequiredItems")
+    .headers(ActionHelpers.owfRelatedHeaders)
+    .param("accessAlertShown", "true")
+    .param("id", "${serviceItemId}")
+    .basicAuth("${userName}", "password")
+
   def getConfig: ActionBuilder =
     http("Request config.js")
       .get("config.js")

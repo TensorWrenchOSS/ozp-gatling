@@ -21,4 +21,6 @@ object ActionHelpers {
   val configHeaders = Map(CONTENT_TYPE -> TEXT_HTML)
 
   val adminTypeHeaders = Map(CONTENT_TYPE -> APPLICATION_FORM_URLENCODED)
+
+  val owfRelatedHeaders = Map(CONTENT_TYPE -> APPLICATION_FORM_URLENCODED)
 }
