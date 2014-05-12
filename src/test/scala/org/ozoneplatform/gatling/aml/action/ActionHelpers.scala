@@ -23,4 +23,6 @@ object ActionHelpers {
   val adminTypeHeaders = Map(CONTENT_TYPE -> APPLICATION_FORM_URLENCODED)
 
   val owfRelatedHeaders = Map(CONTENT_TYPE -> APPLICATION_FORM_URLENCODED)
+
+  val setUIRelatedHeaders = Map(CONTENT_TYPE -> APPLICATION_FORM_URLENCODED)
 }

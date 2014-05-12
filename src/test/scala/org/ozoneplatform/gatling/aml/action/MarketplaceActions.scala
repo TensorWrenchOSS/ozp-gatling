@@ -61,14 +61,43 @@ object MarketplaceActions {
     .queryParam("text", "${itemComment}")
     .queryParam("userRate", "${itemRating}")
     .queryParam("newUserRating", "${itemRating}")
+    .queryParam("accessAlertShown", "true")
     .basicAuth("${userName}", "password")
 
-  def addToOwf: ActionBuilder = http("Add Listing to Owf")
-    .post("relationship/getOWFRequiredItems")
-    .headers(ActionHelpers.owfRelatedHeaders)
-    .param("accessAlertShown", "true")
-    .param("id", "${serviceItemId}")
-    .basicAuth("${userName}", "password")
+  def getAffiliatedMarketplaces: ActionBuilder =
+    http("Get affiliated marketplaces")
+      .get("affiliatedMarketplace/listAsJSON")
+      .headers(ActionHelpers.restApiHeaders)
+      .queryParam("active", "true")
+      .queryParam("accessAlertShown", "true")
+      .basicAuth("${userName}", "password")
+
+  def goToShoppePage: ChainBuilder =
+    group("Go to the Shoppe Page") {
+      exec(http("Request for Shoppe Page")
+        .get("serviceItem/shoppe")
+        .queryParam("max", "5")
+        .queryParam("offset", "0")
+        .queryParam("accessAlertShown", "true")
+        .basicAuth("${userName}", "password"))
+        .exec(getConfig)
+    }
+
+  def setSearchResultUI: ActionBuilder =
+    http("Set the Search Result UI")
+      .post("search/setResultUiViewSettings")
+      .headers(ActionHelpers.setUIRelatedHeaders)
+      .param("accessAlertShown", "true")
+      .param("viewGridOrList", "grid")
+      .basicAuth("${userName}", "password")
+
+  def addToOwf: ActionBuilder =
+    http("Add Listing to Owf")
+      .post("relationship/getOWFRequiredItems")
+      .headers(ActionHelpers.owfRelatedHeaders)
+      .param("accessAlertShown", "true")
+      .param("id", "${serviceItemId}")
+      .basicAuth("${userName}", "password")
 
   def getConfig: ActionBuilder =
     http("Request config.js")
