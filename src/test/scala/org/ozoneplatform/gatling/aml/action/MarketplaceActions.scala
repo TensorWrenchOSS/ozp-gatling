@@ -75,12 +75,9 @@ object MarketplaceActions {
   def goToShoppePage: ChainBuilder =
     group("Go to the Shoppe Page") {
       exec(http("Request for Shoppe Page")
-        .get("serviceItem/shoppe")
-        .queryParam("max", "5")
-        .queryParam("offset", "0")
+        .get("/")
         .queryParam("accessAlertShown", "true")
         .basicAuth("${userName}", "password"))
-        .exec(getConfig)
     }
 
   def setSearchResultUI: ActionBuilder =
