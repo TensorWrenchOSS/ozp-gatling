@@ -74,7 +74,7 @@ class MarketplaceBasicScenario extends Simulation {
 
   val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
     .feed(Feeders.randomUserFeeder(userCount))
-    .exec(goToShoppePage)
+    //.exec(goToShoppePage)
     .repeat(10) {
       pause(1 seconds, 5 seconds) //pause to choose search method/query
       .randomSwitch(52.0 -> browseForListings, 48.0 -> searchForListings)
