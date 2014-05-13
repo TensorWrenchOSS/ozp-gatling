@@ -16,8 +16,6 @@ class MarketplaceBasicScenario extends Simulation {
   val userLoops = getScenarioUserCount
   val rampPeriod = getRampPeriod
 
-  val tagList = FeederHelpers.randWordSet(count = 500)
-
   val allListings: ActionBuilder = new SearchBuilder().allListings().maxResults(24).search
   val newArrivals: ActionBuilder = new SearchBuilder().newArrivals().maxResults(24).search
   val highestRate: ActionBuilder = new SearchBuilder().highestRated().maxResults(24).search

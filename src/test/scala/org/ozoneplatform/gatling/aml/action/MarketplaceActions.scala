@@ -81,6 +81,15 @@ object MarketplaceActions {
       .exec(getConfig)
     }
 
+  def goToDiscoveryPage: ChainBuilder =
+    group("Go to the Discovery Page") {
+      exec(http("Request for discovery page")
+        .get("spa/")
+        .basicAuth("${userName}", "password"))
+      .exec(getConfig)
+      .exec(getAffiliatedMarketplaces)
+    }
+
   def setSearchResultUI: ActionBuilder =
     http("Set the Search Result UI")
       .post("search/setResultUiViewSettings")
