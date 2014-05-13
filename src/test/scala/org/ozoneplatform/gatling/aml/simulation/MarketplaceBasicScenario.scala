@@ -49,13 +49,13 @@ class MarketplaceBasicScenario extends Simulation {
   //TODO: handle choosing an actual filter to apply - for now, just repeat the same search
   def getFilterChain(searchChain: ChainBuilder): ChainBuilder = {
     randomSwitch(47.0 ->
-      pause(3 seconds, 12 seconds)
+      pause(1 seconds, 5 seconds)
       .exec(searchChain)
       .randomSwitch(33.0 ->
-        pause(3 seconds, 12 seconds)
+        pause(1 seconds, 5 seconds)
         .exec(searchChain)
         .randomSwitch(33.0 ->
-          pause(3 seconds, 12 seconds)
+          pause(1 seconds, 5 seconds)
           .exec(searchChain))))
   }
 
@@ -76,10 +76,10 @@ class MarketplaceBasicScenario extends Simulation {
     .feed(Feeders.randomUserFeeder(userCount))
     .exec(goToShoppePage)
     .repeat(10) {
-      pause(3 seconds, 12 seconds) //pause to choose search method/query
+      pause(1 seconds, 5 seconds) //pause to choose search method/query
       .randomSwitch(52.0 -> browseForListings, 48.0 -> searchForListings)
       .repeat(5) {
-        pause(3 seconds, 12 seconds) //pause to scan and choose search result
+        pause(1 seconds, 5 seconds) //pause to scan and choose search result
         .exec(getSearchItemAndDoChain(randomSwitch(0.25 -> reviewChain, 0.5 -> tagChain, 0.5 -> exec(addToOwf))))
       }
     }

@@ -78,6 +78,7 @@ object MarketplaceActions {
         .get("/")
         .queryParam("accessAlertShown", "true")
         .basicAuth("${userName}", "password"))
+      .exec(getConfig)
     }
 
   def setSearchResultUI: ActionBuilder =
