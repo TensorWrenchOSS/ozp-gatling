@@ -2,7 +2,7 @@ package org.ozoneplatform.gatling.aml.builder
 
 import io.gatling.http.request.builder.HttpRequestBuilder
 import io.gatling.http.Predef._
-import play.api.libs.json.{Json, JsObject}
+import play.api.libs.json.{JsString, JsValue, Json, JsObject}
 import io.gatling.core.Predef._
 import io.gatling.core.action.builder.ActionBuilder
 import org.ozoneplatform.gatling.aml.action.ActionHelpers
@@ -15,10 +15,13 @@ class SearchBuilder(requestIn: HttpRequestBuilder) {
     this(http("Make a search request")
       .get("public/search")
       .headers(ActionHelpers.searchHeaders)
-      .check(bodyString
-        .transform(results => (Json.parse(results) \ "data").as[List[JsObject]])
-        .saveAs("searchResults"))
-    )
+      .check(bodyString.transform(
+        results => {
+          //Store only the IDs in the gatling session, as subsequent actions do not require anything else for now
+          (Json.parse(results) \ "data")
+            .as[Array[JsValue]]
+            .map(item => (item \ "id").as[JsValue])
+        }).saveAs("searchResults")))
   }
 
   def basicAuth(username: String, password: String): SearchBuilder = new SearchBuilder(request.basicAuth(username, password))

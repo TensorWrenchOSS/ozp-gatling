@@ -4,7 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import org.ozoneplatform.gatling.aml.builder.{ContactBuilder, ServiceItemBuilder}
 import io.gatling.core.action.builder.ActionBuilder
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsValue, JsString, JsObject, Json}
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.request.builder.HttpRequestWithParamsBuilder
 import scala.concurrent.duration._
@@ -121,13 +121,12 @@ object MarketplaceActions {
    * @return
    */
   def getSearchItemAndDoChain(chain: ChainBuilder): ChainBuilder =
-    doIf((session: Session) => session("searchResults").as[List[JsObject]].size > 0) {
-      exec((session: Session) => {
-        val results = session("searchResults").as[List[JsObject]]
-        val firstResult = results.head
-        val itemId = firstResult \ "id"
+    doIf(session => session("searchResults").as[Array[JsValue]].size > 0) {
+      exec(session => {
+        val results = session("searchResults").as[Array[JsValue]]
+        val firstListingId = results.head.toString()
 
-        session.set("serviceItemId", itemId).set("searchResults", results.tail)
+        session.set("serviceItemId", firstListingId).set("searchResults", results.tail)
       })
         .group("Quick View") {
         serviceItemGroupUser
