@@ -1,4 +1,4 @@
-To run the marketplace gatling tests you will need a Java 7 runtime and
+To run the marketplace gatling tests you will need JDK 7 and
 Maven. This project has been tested with OpenJDK 1.7 and Maven 3.2.1 on CentOS
 and Oracle JDK 1.7 and Maven 3.2.1 on Mac OS X.
 
