@@ -17,3 +17,6 @@ Here is a breakdown of the command line properties:
 The AML team uses basic HTTP auth for performance testing. The configuration can be found in MPsecurityContext.xml in the following repo:
 
 https://www.owfgoss.org/git/repos/marketplace-docker-bundle.git
+
+This project has one or more SNAPSHOT dependencies. If it is necessary to run the project while disconnected, you can greatly
+speed up the dependency resolution step by running in offline mode (add --offline or -o to the maven invocation).
