@@ -35,6 +35,6 @@ class InitializeAdminTypes extends Simulation {
 
 
   setUp(
-    initCustomFields.inject(rampUsers(5).over(5))
+    initCustomFields.inject(nothingFor(5 seconds), ramp(5 users) over (5 seconds))
   ).protocols(restHttpProtocol)
 }

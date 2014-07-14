@@ -4,6 +4,7 @@ import org.ozoneplatform.gatling.aml.feeder.{FeederHelpers, Feeders}
 import io.gatling.core.Predef._
 import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
 import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
+import bootstrap._
 import scala.concurrent.duration._
 import org.ozoneplatform.gatling.aml.builder.SearchBuilder
 import org.ozoneplatform.gatling.aml.action.ActionHelpers._
@@ -12,14 +13,14 @@ import io.gatling.core.structure.ChainBuilder
 import scala.util.Random
 
 class MarketplaceBasicScenarioSPA extends Simulation {
-  val userCount = getUserCount
-  val userLoops = getScenarioUserCount
-  val rampPeriod = getRampPeriod
+  val userCount = getUserCount.toInt
+  val userLoops = getScenarioUserCount.toInt
+  val rampPeriod = getRampPeriod.toInt
 
-  val allListings: ActionBuilder = new SearchBuilder().allListings().maxResults(24).search
-  val newArrivals: ActionBuilder = new SearchBuilder().newArrivals().maxResults(24).search
-  val highestRate: ActionBuilder = new SearchBuilder().highestRated().maxResults(24).search
-  val termSearch: ActionBuilder = new SearchBuilder().searchTerm("${queryString}").maxResults(24).search
+  val allListings: ActionBuilder = new SearchBuilder().allListings().maxResults("24").search
+  val newArrivals: ActionBuilder = new SearchBuilder().newArrivals().maxResults("24").search
+  val highestRate: ActionBuilder = new SearchBuilder().highestRated().maxResults("24").search
+  val termSearch: ActionBuilder = new SearchBuilder().searchTerm("${queryString}").maxResults("24").search
 
   val browseForListings = {
     val searchAction = Random.shuffle(Array(allListings, newArrivals, highestRate).toList).head
@@ -41,13 +42,13 @@ class MarketplaceBasicScenarioSPA extends Simulation {
   //filter search results up to 3 times
   //TODO: handle choosing an actual filter to apply - for now, just repeat the same search
   def getFilterChain(searchChain: ChainBuilder): ChainBuilder = {
-    randomSwitch(47.0 ->
+    randomSwitch(47 ->
       pause(1 seconds, 5 seconds)
       .exec(searchChain)
-      .randomSwitch(33.0 ->
+      .randomSwitch(33 ->
         pause(1 seconds, 5 seconds)
         .exec(searchChain)
-        .randomSwitch(33.0 ->
+        .randomSwitch(33 ->
           pause(1 seconds, 5 seconds)
           .exec(searchChain))))
   }
@@ -70,17 +71,17 @@ class MarketplaceBasicScenarioSPA extends Simulation {
     .exec(goToDiscoveryPage)
     .repeat(10) {
       pause(1 seconds, 5 seconds) //pause to choose search method/query
-      .randomSwitch(52.0 -> browseForListings, 48.0 -> searchForListings)
+      .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
       .repeat(5) {
         pause(1 seconds, 5 seconds) //pause to scan and choose search result
-        .exec(getSearchItemAndDoChain(randomSwitch(0.25 -> reviewChain, 0.5 -> tagChain, 0.5 -> exec(addToOwf))))
+        .exec(getSearchItemAndDoChain(randomSwitch(1 -> reviewChain, 1 -> tagChain, 1 -> exec(addToOwf))))
       }
     }
 
   setUp(
     basicUserScenario.inject(
-      rampUsers(30).over(30),
-      nothingFor(120),
-      rampUsers(userLoops).over(rampPeriod))
+      ramp(30 users) over (30 seconds),
+      ramp(userLoops users) over (rampPeriod seconds)
+    )
   ).protocols(restHttpProtocol)
 }

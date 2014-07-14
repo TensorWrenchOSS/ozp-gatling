@@ -10,15 +10,20 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gatling.version>2.0.0-SNAPSHOT</gatling.version>
+        <gatling.version>2.0.0-M3a</gatling.version>
     </properties>
 
     <repositories>
         <repository>
             <id>excilys</id>
             <name>Excilys Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <url>http://repository.excilys.com/content/groups/public</url>
         </repository>
+        <!-- <repository>
+            <id>excilys snapshots</id>
+            <name>Excilys Snapshot Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository> -->
         <repository>
             <id>typesafe</id>
             <name>Typesafe Repository</name>
@@ -27,10 +32,15 @@
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>excilys</id>
+        <!-- <pluginRepository>
+            <id>excilys snapshots</id>
             <name>Excilys Snapshot Repository</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </pluginRepository> -->
+        <pluginRepository>
+            <id>excilys</id>
+            <name>Excilys Repository</name>
+            <url>http://repository.excilys.com/content/groups/public</url>
         </pluginRepository>
     </pluginRepositories>
 

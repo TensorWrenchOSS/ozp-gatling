@@ -2,27 +2,25 @@ package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.http.Predef._
 import org.ozoneplatform.gatling.aml.feeder.FeederUtils
-import io.gatling.http.HeaderNames._
-import io.gatling.http.HeaderValues._
+import io.gatling.core.config.Protocol
 
 object ActionHelpers {
 
   val baseUrl = FeederUtils.getBaseUrl
 
-  val restHttpProtocol = http.baseURL(baseUrl)
+  val restHttpProtocol: Protocol = http
+    .baseURL(baseUrl)
+    .acceptHeader("application/json")
 
-  val searchHeaders = Map(ACCEPT -> APPLICATION_JSON)
+  val restApiHeaders = Map("Content-Type" -> "application/json")
 
-  val restApiHeaders = Map(
-    CONTENT_TYPE -> APPLICATION_JSON,
-    ACCEPT -> APPLICATION_JSON
-  )
+  val searchHeaders = Map("Content-Type" -> "application/json")
 
-  val configHeaders = Map(CONTENT_TYPE -> TEXT_HTML)
+  val configHeaders = Map("Content-Type" -> "text/html")
 
-  val adminTypeHeaders = Map(CONTENT_TYPE -> APPLICATION_FORM_URLENCODED)
+  val adminTypeHeaders = Map("Content-Type" -> "application/x-www-form-urlencoded")
 
-  val owfRelatedHeaders = Map(CONTENT_TYPE -> APPLICATION_FORM_URLENCODED)
+  val setUIRelatedHeaders = Map("Content-Type" -> "application/x-www-form-urlencoded")
 
-  val setUIRelatedHeaders = Map(CONTENT_TYPE -> APPLICATION_FORM_URLENCODED)
+  val owfRelatedHeaders = Map("Content-Type" -> "application/x-www-form-urlencoded")
 }

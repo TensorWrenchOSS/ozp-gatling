@@ -2,12 +2,13 @@ package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.aml.builder.{ContactBuilder, ServiceItemBuilder}
+import org.ozoneplatform.gatling.aml.builder.{SearchBuilder, ContactBuilder, ServiceItemBuilder}
 import io.gatling.core.action.builder.ActionBuilder
-import play.api.libs.json.{JsValue, JsString, JsObject, Json}
+import play.api.libs.json.{JsObject, Json}
+import bootstrap._
 import io.gatling.core.structure.ChainBuilder
-import io.gatling.http.request.builder.HttpRequestWithParamsBuilder
 import scala.concurrent.duration._
+import io.gatling.http.request.builder.PostHttpRequestBuilder
 
 object MarketplaceActions {
   def createUser: ActionBuilder = http("Login and create a profile by making a simple request")
@@ -30,16 +31,14 @@ object MarketplaceActions {
         .name("${contactName}"))
       .toString()))
     .basicAuth(userName, "password")
-    .check(bodyString.saveAs("serviceItem"),
-           bodyString.transform(results => Json.parse(results) \ "id").saveAs("serviceItemId"))
+    .check(jsonPath("$").saveAs("serviceItem"), jsonPath("$.id").saveAs("serviceItemId"))
 
   def modifyServiceItem(userName: String): ActionBuilder = http("Modify a service item")
     .put("api/serviceItem/" + "${serviceItemId}")
     .headers(ActionHelpers.restApiHeaders)
     .body(StringBody("${serviceItem}"))
     .basicAuth(userName, "password")
-    .check(bodyString.saveAs("serviceItem"),
-           bodyString.transform(results => Json.parse(results) \ "id").saveAs("serviceItemId"))
+    .check(jsonPath("$").saveAs("serviceItem"), jsonPath("$.id").saveAs("serviceItemId"))
 
   def tagServiceItem: ActionBuilder = http("Tag a service item")
     .post("api/serviceItem/" + "${serviceItemId}" + "/tag")
@@ -121,10 +120,10 @@ object MarketplaceActions {
    * @return
    */
   def getSearchItemAndDoChain(chain: ChainBuilder): ChainBuilder =
-    doIf(session => session("searchResults").as[Array[JsValue]].size > 0) {
+    doIf(session => session("searchResults").as[Array[String]].size > 0) {
       exec(session => {
-        val results = session("searchResults").as[Array[JsValue]]
-        val firstListingId = results.head.toString()
+        val results = session("searchResults").as[Array[String]]
+        val firstListingId = results.head
 
         session.set("serviceItemId", firstListingId).set("searchResults", results.tail)
       })
@@ -192,14 +191,14 @@ object MarketplaceActions {
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
-  def createAdminTypeBase(url: String): HttpRequestWithParamsBuilder =
+  def createAdminTypeBase(url: String): PostHttpRequestBuilder =
     http("Manage Admin Type: " + url)
       .post(url)
       .headers(ActionHelpers.adminTypeHeaders)
       .basicAuth("${adminUserName}", "password")
       .queryParam("accessAlertShown", "true")
 
-  def customFieldDefinitionBase: HttpRequestWithParamsBuilder =
+  def customFieldDefinitionBase: PostHttpRequestBuilder =
     createAdminTypeBase("customFieldDefinition/save")
       .param("allTypes", "true")
       .param("section", "typeProperties")

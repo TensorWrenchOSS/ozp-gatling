@@ -7,6 +7,8 @@ import io.gatling.core.Predef._
 import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
 import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import org.ozoneplatform.gatling.aml.builder.ServiceItemBuilder
+import bootstrap._
+import scala.concurrent.duration._
 
 class InitializeMarketplaceItems extends Simulation {
   val itemCount = getItemCount
@@ -46,6 +48,6 @@ class InitializeMarketplaceItems extends Simulation {
     .exec(approveServiceItem)
 
   setUp(
-    initServiceItems.inject(rampUsers(itemCount).over(itemCount))
+    initServiceItems.inject(nothingFor(5 seconds), ramp(itemCount.toInt users) over (itemCount.toInt seconds))
   ).protocols(restHttpProtocol)
 }
