@@ -76,9 +76,9 @@ class MarketplaceBasicScenarioSPA extends Simulation {
         pause(1 seconds, 5 seconds) //pause to scan and choose search result
         .exec(getSearchItemAndDoChain(randomSwitch(
           //can't do fractions of a percent with randomSwitch, hence the nesting
-          1 -> randomSwitch(25, reviewChain),
-          1 -> randomSwitch(50, tagChain),
-          1 -> randomSwitch(50, exec(addToOwf))
+          1 -> exec(randomSwitch(25 -> reviewChain)),
+          1 -> exec(randomSwitch(50 -> tagChain)),
+          1 -> exec(randomSwitch(50 -> exec(addToOwf)))
         )))
       }
     }
