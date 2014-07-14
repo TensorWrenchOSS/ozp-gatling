@@ -79,7 +79,12 @@ class MarketplaceBasicScenario extends Simulation {
       .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
       .repeat(5) {
         pause(1 seconds, 5 seconds) //pause to scan and choose search result
-        .exec(getSearchItemAndDoChain(randomSwitch(1 -> reviewChain, 1 -> tagChain, 1 -> exec(addToOwf))))
+        .exec(getSearchItemAndDoChain(randomSwitch(
+          //can't do fractions of a percent with randomSwitch, hence the nesting
+          1 -> randomSwitch(25, reviewChain),
+          1 -> randomSwitch(50, tagChain),
+          1 -> randomSwitch(50, exec(addToOwf))
+        )))
       }
     }
 
