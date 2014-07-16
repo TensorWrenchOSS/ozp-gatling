@@ -20,3 +20,7 @@ https://www.owfgoss.org/git/repos/marketplace-docker-bundle.git
 
 This project has one or more SNAPSHOT dependencies. If it is necessary to run the project while disconnected, you can greatly
 speed up the dependency resolution step by running in offline mode (add --offline or -o to the maven invocation).
+
+Notes:
+* Things to do before starting test
+** Verify that the SESSION CONTROL is turned OFF
