@@ -12,9 +12,11 @@ object ActionHelpers {
     .baseURL(baseUrl)
     .acceptHeader("application/json")
 
-  val restApiHeaders = Map("Content-Type" -> "application/json")
+  val restApiHeaders = Map("Content-Type" -> "application/json",
+                           "Connection" -> "keep-alive")
 
-  val searchHeaders = Map("Content-Type" -> "application/json")
+  val searchHeaders = Map("Content-Type" -> "application/json",
+                          "Connection" -> "keep-alive")
 
   val configHeaders = Map("Content-Type" -> "text/html")
 
