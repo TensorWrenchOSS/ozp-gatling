@@ -126,6 +126,8 @@
                     </execution>
                 </executions>
                 <configuration>
+                  <!-- <noReports>true</noReports> -->
+                  <!-- <reportsOnly>marketplacenode-20140724115122</reportsOnly> -->
                   <jvmArgs>
                     <jvmArg>-server</jvmArg>
                     <jvmArg>-XX:+UseThreadPriorities</jvmArg>

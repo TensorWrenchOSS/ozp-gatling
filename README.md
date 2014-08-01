@@ -18,8 +18,17 @@ The AML team uses basic HTTP auth for performance testing. The configuration can
 
 https://www.owfgoss.org/git/repos/marketplace-docker-bundle.git
 
+If needed, this project can be run disconnected from the internet, however you will first need all of the dependencies installed in your local maven repository. You can accomplish this
+while still connected by running the following command from the project root directory:
+
+mvn dependency:go-offline
+
+After this is complete, all of the dependencies will be in your local maven repository ($HOME/.m2/repository by default). It should then be possible to run
+the project in an environment where internet connectivity does not exist.
+
 This project has one or more SNAPSHOT dependencies. If it is necessary to run the project while disconnected, you can greatly
-speed up the dependency resolution step by running in offline mode (add --offline or -o to the maven invocation).
+speed up the dependency resolution step by running in offline mode (add --offline or -o to the maven invocation) which prevents
+maven from attempting to look for updates to those dependencies.
 
 Notes:
 * Things to do before starting test
