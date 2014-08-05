@@ -18,6 +18,8 @@ The AML team uses basic HTTP auth for performance testing. The configuration can
 
 https://www.owfgoss.org/git/repos/marketplace-docker-bundle.git
 
+Note that if you are using a version of the application built with grails 1.3.x (7.14 and older), you will want to use the file from the 7.14 tag (git checkout 7.14).
+
 If needed, this project can be run disconnected from the internet, however you will first need all of the dependencies installed in your local maven repository. You can accomplish this
 while still connected by running the following command from the project root directory:
 
