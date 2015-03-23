@@ -107,19 +107,19 @@ object Feeders {
     }
 
   /**
-   * Given a string of objects as json, return a randomly chosen item id from that list
+   * Given a string of objects as json, return a randomly chosen item title from that list
    *
    * @param objectsAsJson a response body where the list of objects are in a property called "data"
    * @param propertyName the key to use when inserting the id into the session (defaults to objectId)
    * @return
    */
-  def randomObjectIdFromJson(objectsAsJson: String, propertyName: String = "objectId"): Feeder[Int] =
-    new Feeder[Int] {
-      val storeItems = (Json.parse(objectsAsJson) \ "data").as[Array[JsObject]]
+  def randomObjectTitleFromJson(objectsAsJson: String, propertyName: String = "objectId"): Feeder[String] =
+    new Feeder[String] {
+      val storeItems = (Json.parse(objectsAsJson) \ "_embedded" \ "item").as[Array[JsObject]]
 
       override def hasNext = true
 
-      override def next(): Map[String, Int] = Map(propertyName -> (randomItemAsJson(storeItems) \ "id").as[Int])
+      override def next(): Map[String, String] = Map(propertyName -> (randomItemAsJson(storeItems) \ "title").as[String])
     }
 
   /**

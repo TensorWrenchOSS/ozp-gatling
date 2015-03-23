@@ -2,7 +2,7 @@ package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.aml.builder.{SearchBuilder, ContactBuilder, ServiceItemBuilder}
+import org.ozoneplatform.gatling.aml.builder.{SearchBuilder, ContactBuilder, ListingBuilder}
 import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import bootstrap._
@@ -12,39 +12,52 @@ import io.gatling.http.request.builder.PostHttpRequestBuilder
 
 object MarketplaceActions {
   def createUser: ActionBuilder = http("Login and create a profile by making a simple request")
-    .get("api/serviceItem")
+    .get("api/listing")
     .headers(ActionHelpers.restApiHeaders)
     .basicAuth("${userName}", "password")
 
-  def createServiceItem(userName: String): ActionBuilder = http("Create a service item")
-    .post("api/serviceItem")
+  def createListing(userName: String): ActionBuilder = http("Create a listing")
+    .post("api/listing")
     .headers(ActionHelpers.restApiHeaders)
-    .body(StringBody(new ServiceItemBuilder()
-      .types("${typesId}")
+    .body(StringBody(new ListingBuilder()
+      .types("${itemType}")
       .title("${itemTitle}")
       .description("${itemDescription}")
-      .addCategory("${categoryId}")
-      .addContact(new ContactBuilder()
-        .contactType("${contactTypeId}")
-        .email("${contactEmail}")
-        .securePhone("111-1111")
-        .name("${contactName}"))
+      .descriptionShort("${itemDescriptionShort}")
+      .versionName("${itemVersionName}")
+      .requirements("${itemRequirements}")
+      //.smallIconId("${smallIconId}")
+      //.largeIconId("${largeIconId}")
+      //.bannerIconId("${bannerIconId}")
+      //.featuredBannerIconId("${featuredBannerIconId}")
+      //.screenshots("${screenshots}")
+      .whatIsNew("${itemWhatIsNew}")
+    //  .agency("${itemAgency}")
+    //  .addTag("${itemTag}")
+     // .categories("${itemCategory}")
+      .addCategory("${itemCategory}")
+    //  .addContact(new ContactBuilder()
+     //   .contactType("${itemContactType}")
+     //   .email("${contactEmail}")
+     //   .securePhone("111-1111")
+     //   .name("${contactName}"))
       .toString()))
     .basicAuth(userName, "password")
-    .check(jsonPath("$").saveAs("serviceItem"), jsonPath("$.id").saveAs("serviceItemId"))
+    .check(jsonPath("$").saveAs("listing"), jsonPath("$.id").saveAs("listingId"))
 
-  def modifyServiceItem(userName: String): ActionBuilder = http("Modify a service item")
-    .put("api/serviceItem/" + "${serviceItemId}")
+  def modifyListing(userName: String): ActionBuilder = http("Modify a listing")
+    .put("api/listing/" + "${listingId}")
     .headers(ActionHelpers.restApiHeaders)
-    .body(StringBody("${serviceItem}"))
+    .body(StringBody("${listing}"))
     .basicAuth(userName, "password")
-    .check(jsonPath("$").saveAs("serviceItem"), jsonPath("$.id").saveAs("serviceItemId"))
+    .check(jsonPath("$").saveAs("listing"), jsonPath("$.id").saveAs("listingId"))
 
-  def tagServiceItem: ActionBuilder = http("Tag a service item")
+ /* def tagServiceItem: ActionBuilder = http("Tag a service item")
     .post("api/serviceItem/" + "${serviceItemId}" + "/tag")
     .headers(ActionHelpers.restApiHeaders)
     .body(StringBody("[{\"title\": \"" +  "${itemTag}" + "\"}]"))
     .basicAuth("${userName}", "password")
+
 
   def reviewServiceItem: ActionBuilder = http("Post a review on a serviceItem")
     //This is the legacy form based request which is still used in the quick view
@@ -110,6 +123,8 @@ object MarketplaceActions {
       .get("config.js")
       .headers(ActionHelpers.configHeaders)
       .basicAuth("${userName}", "password")
+
+
 
   /**
    * Gets search results from the session, chooses the first item and after a pause (for the user to "think"), performs
@@ -228,5 +243,5 @@ object MarketplaceActions {
   def createCategory: ActionBuilder =
     createAdminTypeBase("category/save")
       .param("title", "${categoryTitle}")
-
+*/
 }

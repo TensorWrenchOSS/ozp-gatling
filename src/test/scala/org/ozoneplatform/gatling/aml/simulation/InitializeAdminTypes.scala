@@ -10,7 +10,7 @@ import org.ozoneplatform.gatling.aml.feeder.Feeders._
 class InitializeAdminTypes extends Simulation {
   val adminCount = getAdminCount
 
-  val initCustomFields = scenario("Initializing Custom Fields")
+/*  val initCustomFields = scenario("Initializing Custom Fields")
     .feed(wordFeeder(propertyName = "cfName"))
     .feed(wordFeeder(propertyName = "cfLabel"))
     .feed(randomUserFeeder(adminCount, isAdmin = true, propertyName = "adminUserName"))
@@ -37,4 +37,6 @@ class InitializeAdminTypes extends Simulation {
   setUp(
     initCustomFields.inject(nothingFor(5 seconds), ramp(5 users) over (5 seconds))
   ).protocols(restHttpProtocol)
+
+*/
 }

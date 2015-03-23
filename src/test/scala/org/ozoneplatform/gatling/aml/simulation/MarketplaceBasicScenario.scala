@@ -11,7 +11,7 @@ import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import io.gatling.core.action.builder.ActionBuilder
 import io.gatling.core.structure.ChainBuilder
 import scala.util.Random
-
+/* 
 class MarketplaceBasicScenario extends Simulation {
   val userCount = getUserCount.toInt
   val userLoops = getScenarioUserCount.toInt
@@ -58,7 +58,7 @@ class MarketplaceBasicScenario extends Simulation {
           .exec(searchChain))))
   }
 
-  val reviewChain = {
+    val reviewChain = {
     feed(Feeders.blurbFeeder(propertyName = "itemComment"))
     .feed(Feeders.itemRatingFeeder())
     .pause(1 minutes, 3 minutes) //pause to compose the review
@@ -94,4 +94,6 @@ class MarketplaceBasicScenario extends Simulation {
       ramp(userLoops users) over (rampPeriod seconds)
     )
   ).protocols(restHttpProtocol)
+
 }
+*/

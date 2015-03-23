@@ -11,7 +11,7 @@ import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import io.gatling.core.action.builder.ActionBuilder
 import io.gatling.core.structure.ChainBuilder
 import scala.util.Random
-
+/*
 class MarketplaceBasicScenarioSPA extends Simulation {
   val userCount = getUserCount.toInt
   val userLoops = getScenarioUserCount.toInt
@@ -90,3 +90,4 @@ class MarketplaceBasicScenarioSPA extends Simulation {
     )
   ).protocols(restHttpProtocol)
 }
+*/

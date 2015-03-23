@@ -6,7 +6,7 @@ import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
 import io.gatling.core.Predef._
 import org.ozoneplatform.gatling.aml.action.MarketplaceActions._
 import org.ozoneplatform.gatling.aml.action.ActionHelpers._
-import org.ozoneplatform.gatling.aml.builder.ServiceItemBuilder
+import org.ozoneplatform.gatling.aml.builder.ListingBuilder
 import bootstrap._
 import scala.concurrent.duration._
 
@@ -14,38 +14,56 @@ class InitializeMarketplaceItems extends Simulation {
   val itemCount = getItemCount
   val adminCount = getAdminCount
   val userCount = getUserCount
-  val itemTypes = getObjectDataAsJson(TYPES_PATH)
-  val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
-  val categories = getObjectDataAsJson(CATEGORY_PATH)
+  val itemType = getObjectDataAsJson(TYPE_PATH)
+  //val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
+  val itemCategory = getObjectDataAsJson(CATEGORY_PATH)
 
-  val submitServiceItem = exec((session: Session) => {
-    val item = session("serviceItem").as[String]
-    val itemJson = new ServiceItemBuilder(item).submit().toString
+  val submitListing = exec((session: Session) => {
+    val item = session("listing").as[String]
+    val itemJson = new ListingBuilder(item).submit().toString
 
-    session.set("serviceItem", itemJson)
-  }).exec(modifyServiceItem("${userName}"))
+    session.set("listing", itemJson)
+  }).exec(modifyListing("${userName}"))
 
-  val approveServiceItem = exec((session: Session) => {
-    val item = session("serviceItem").as[String]
-    val itemJson = new ServiceItemBuilder(item).approve().toString
+  val orgApproveListing = exec((session: Session) => {
+    val item = session("listing").as[String]
+    val itemJson = new ListingBuilder(item).orgApprove().toString
 
-    session.set("serviceItem", itemJson)
-  }).exec(modifyServiceItem("${adminUserName}"))
+    session.set("listing", itemJson)
+  }).exec(modifyListing("${adminUserName}"))
 
-  val initServiceItems = scenario("Initializing" + itemCount + " service items.")
+  val approveListing = exec((session: Session) => {
+    val item = session("listing").as[String]
+    val itemJson = new ListingBuilder(item).approve().toString
+
+    session.set("listing", itemJson)
+  }).exec(modifyListing("${adminUserName}"))
+
+  val initServiceItems = scenario("Initializing" + itemCount + " listings.")
     .feed(Feeders.blurbFeeder(3000, "itemDescription"))
+    .feed(Feeders.blurbFeeder(100, "itemDescriptionShort"))
+    .feed(Feeders.blurbFeeder(2, "itemVersionName"))
+    .feed(Feeders.blurbFeeder(500, "itemRequirements"))
+    //.feed(Feeders).smallIconId
+    //.feed(Feeders).largeIconId
+    //.feed(Feeders).bannerIconId
+    //.feed(Feeders).featuredBannerIconId
+    //.feed(Feeders).screenshots
     .feed(Feeders.wordListFeeder(propertyName = "itemTitle"))
+    .feed(Feeders.blurbFeeder(100, "itemWhatIsNew"))
     .feed(Feeders.randomUserFeeder(userCount))
     .feed(Feeders.randomUserFeeder(adminCount, isAdmin =  true, propertyName = "adminUserName"))
-    .feed(Feeders.randomObjectIdFromJson(itemTypes, "typesId"))
-    .feed(Feeders.randomObjectIdFromJson(contactTypes, "contactTypeId"))
-    .feed(Feeders.randomObjectIdFromJson(categories, "categoryId"))
-    .feed(Feeders.emailFeeder("contactEmail"))
-    .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
-    .exec(createServiceItem("${userName}"))
-    .exec(submitServiceItem)
-    .exec((session: Session) => { session.remove("gatling.http.cookies") }) //logout the user, so we can log in the admin
-    .exec(approveServiceItem)
+    .feed(Feeders.randomObjectTitleFromJson(itemType, "itemType"))
+  //  .feed(Feeders.randomObjectTitleFromJson(contactTypes, "itemContactType"))
+    .feed(Feeders.randomObjectTitleFromJson(itemCategory, "itemCategory"))
+  //  .feed(Feeders.emailFeeder("contactEmail"))
+   // .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
+    //.feed tags
+    .exec(createListing("${userName}"))
+   // .exec(submitListing)
+  //  .exec((session: Session) => { session.remove("gatling.http.cookies") }) //logout the user, so we can log in the admin
+  //  .exec(orgApproveListing)
+  //  .exec(approveListing)
 
   setUp(
     initServiceItems.inject(nothingFor(5 seconds), ramp(itemCount.toInt users) over (itemCount.toInt seconds))
