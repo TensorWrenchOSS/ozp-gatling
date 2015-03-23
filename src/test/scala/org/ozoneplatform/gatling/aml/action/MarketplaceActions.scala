@@ -34,7 +34,6 @@ object MarketplaceActions {
       .whatIsNew("${itemWhatIsNew}")
     //  .agency("${itemAgency}")
     //  .addTag("${itemTag}")
-     // .categories("${itemCategory}")
       .addCategory("${itemCategory}")
     //  .addContact(new ContactBuilder()
      //   .contactType("${itemContactType}")

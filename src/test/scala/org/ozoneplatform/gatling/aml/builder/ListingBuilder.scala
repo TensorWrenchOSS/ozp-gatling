@@ -54,12 +54,12 @@ class ListingBuilder(jsonIn: JsObject) {
   def addContact(contact: ContactBuilder): ListingBuilder =
     new ListingBuilder(json ++ Json.obj("contacts" -> ((json \ "contacts").as[JsArray] :+ Json.parse(contact.toString))))
 
- // def categories(categories: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("categories" -> categories))
+  // def categories(categories: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("categories" -> categories))
   def addCategory(categories: String): ListingBuilder =
-    new ListingBuilder(json ++ Json.obj("categories" -> ((json \ "categories").as[JsArray] :+ Json.obj("categories" -> categories))))
+    new ListingBuilder(json ++ Json.obj("categories" -> Json.arr(categories)))
 
      //def addTag(tag: String): ListingBuilder =
-  //  new ListingBuilder(json ++ Json.obj("tags" -> ((json \ "tags").as[JsArray] :+ Json.obj("tags" -> tag))))
+   // new ListingBuilder(json ++ Json.obj("tags" -> ((json \ "tags").as[JsArray] :+ Json.obj("tags" -> tag))))
 
   override def toString: String = Json.stringify(json)
 }

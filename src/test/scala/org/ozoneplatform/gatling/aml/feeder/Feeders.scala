@@ -122,6 +122,16 @@ object Feeders {
       override def next(): Map[String, String] = Map(propertyName -> (randomItemAsJson(storeItems) \ "title").as[String])
     }
 
+
+  // def randomObjectTitleFromJsonArray(objectAsJson: String, propertyName: String = "objectId"): Feeder[String] = 
+  //   new Feeder[String]] {
+  //     val storeItems = (Json.parse(objectAsJson) \ "_embedded" \ "item").as[Array[JsObject]]
+
+  //     override def hasNext = true
+
+  //     override def next(): Map[String, Array[String]] = Map(propertyName -> (randomItemAsJson(storeItems) \ "title").as[Array[String]])
+  //   }
+
   /**
    * Generates a random username
    *

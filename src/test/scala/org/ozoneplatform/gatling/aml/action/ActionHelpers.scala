@@ -20,9 +20,9 @@ object ActionHelpers {
 
   val configHeaders = Map("Content-Type" -> "text/html")
 
-  val adminTypeHeaders = Map("Content-Type" -> "application/x-www-form-urlencoded")
+  val adminTypeHeaders = Map("Content-Type" -> "application/json")
 
-  val setUIRelatedHeaders = Map("Content-Type" -> "application/x-www-form-urlencoded")
+  val setUIRelatedHeaders = Map("Content-Type" -> "application/json")
 
-  val owfRelatedHeaders = Map("Content-Type" -> "application/x-www-form-urlencoded")
+  val owfRelatedHeaders = Map("Content-Type" -> "application/json")
 }
