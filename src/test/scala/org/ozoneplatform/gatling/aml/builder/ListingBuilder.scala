@@ -54,7 +54,6 @@ class ListingBuilder(jsonIn: JsObject) {
   def addContact(contact: ContactBuilder): ListingBuilder =
     new ListingBuilder(json ++ Json.obj("contacts" -> ((json \ "contacts").as[JsArray] :+ Json.parse(contact.toString))))
 
-  // def categories(categories: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("categories" -> categories))
   def addCategory(categories: String): ListingBuilder =
     new ListingBuilder(json ++ Json.obj("categories" -> Json.arr(categories)))
 

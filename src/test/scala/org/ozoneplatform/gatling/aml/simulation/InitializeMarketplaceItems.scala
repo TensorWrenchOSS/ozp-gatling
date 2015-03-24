@@ -16,7 +16,7 @@ class InitializeMarketplaceItems extends Simulation {
   val userCount = getUserCount
   val itemType = getObjectDataAsJson(TYPE_PATH)
   val itemAgency = getObjectDataAsJson(AGENCY_PATH)
-  //val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
+  val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
   val itemCategory = getObjectDataAsJson(CATEGORY_PATH)
 
   val submitListing = exec((session: Session) => {
@@ -56,10 +56,10 @@ class InitializeMarketplaceItems extends Simulation {
     .feed(Feeders.randomUserFeeder(adminCount, isAdmin =  true, propertyName = "adminUserName"))
     .feed(Feeders.randomObjectTitleFromJson(itemType, "itemType"))
     .feed(Feeders.randomObjectTitleFromJson(itemAgency, "itemAgency"))
-  //  .feed(Feeders.randomObjectTitleFromJson(contactTypes, "itemContactType"))
+    .feed(Feeders.randomObjectTitleFromJson(contactTypes, "itemContactType"))
     .feed(Feeders.randomObjectTitleFromJson(itemCategory, "itemCategory"))
-  //  .feed(Feeders.emailFeeder("contactEmail"))
-   // .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
+    .feed(Feeders.emailFeeder("contactEmail"))
+    .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
     .feed(Feeders.blurbFeeder(15, "itemTag"))
     .exec(createListing("${userName}"))
    // .exec(submitListing)
