@@ -58,7 +58,7 @@ class InitializeMarketplaceItems extends Simulation {
     .feed(Feeders.randomObjectTitleFromJson(itemCategory, "itemCategory"))
   //  .feed(Feeders.emailFeeder("contactEmail"))
    // .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
-    //.feed tags
+    .feed(Feeders.blurbFeeder(15, "itemTag"))
     .exec(createListing("${userName}"))
    // .exec(submitListing)
   //  .exec((session: Session) => { session.remove("gatling.http.cookies") }) //logout the user, so we can log in the admin

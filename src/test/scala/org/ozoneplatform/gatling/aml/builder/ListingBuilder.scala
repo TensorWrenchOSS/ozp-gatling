@@ -12,8 +12,8 @@ class ListingBuilder(jsonIn: JsObject) {
  //     "imageLargeUrl" -> "https://",
  //     "imageSmallUrl" -> "https://",
       "contacts" -> Json.arr(),
-      "categories" -> Json.arr(),
-      "tags" -> Json.arr()
+      "categories" -> Json.arr()
+   //   "tags" -> Json.arr()
     ))
   }
 
@@ -58,8 +58,9 @@ class ListingBuilder(jsonIn: JsObject) {
   def addCategory(categories: String): ListingBuilder =
     new ListingBuilder(json ++ Json.obj("categories" -> Json.arr(categories)))
 
-     //def addTag(tag: String): ListingBuilder =
-   // new ListingBuilder(json ++ Json.obj("tags" -> ((json \ "tags").as[JsArray] :+ Json.obj("tags" -> tag))))
+  def tags(tags: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("tags" -> Json.arr(tags)))
+ // def addTag(tag: String): ListingBuilder =
+  //  new ListingBuilder(json ++ Json.obj("tags" -> ((json \ "tags").as[JsArray] :+ Json.obj("tags" -> tag))))
 
   override def toString: String = Json.stringify(json)
 }
