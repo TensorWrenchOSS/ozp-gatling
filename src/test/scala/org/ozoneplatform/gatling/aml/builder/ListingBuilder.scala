@@ -43,7 +43,7 @@ class ListingBuilder(jsonIn: JsObject) {
 
   def whatIsNew(whatIsNew: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("whatIsNew" -> whatIsNew))
 
- // def agency(agency: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("agency" -> Json.obj("title" -> agencyTitle)))
+  def agency(agency: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("agency" -> agency))
 
   def approve(): ListingBuilder = new ListingBuilder(json ++ Json.obj("approvalStatus" -> "Approved", "isOutside" -> true))
 
@@ -59,8 +59,7 @@ class ListingBuilder(jsonIn: JsObject) {
     new ListingBuilder(json ++ Json.obj("categories" -> Json.arr(categories)))
 
   def tags(tags: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("tags" -> Json.arr(tags)))
- // def addTag(tag: String): ListingBuilder =
-  //  new ListingBuilder(json ++ Json.obj("tags" -> ((json \ "tags").as[JsArray] :+ Json.obj("tags" -> tag))))
+
 
   override def toString: String = Json.stringify(json)
 }

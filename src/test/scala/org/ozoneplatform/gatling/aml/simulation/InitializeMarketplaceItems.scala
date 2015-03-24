@@ -15,6 +15,7 @@ class InitializeMarketplaceItems extends Simulation {
   val adminCount = getAdminCount
   val userCount = getUserCount
   val itemType = getObjectDataAsJson(TYPE_PATH)
+  val itemAgency = getObjectDataAsJson(AGENCY_PATH)
   //val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
   val itemCategory = getObjectDataAsJson(CATEGORY_PATH)
 
@@ -54,6 +55,7 @@ class InitializeMarketplaceItems extends Simulation {
     .feed(Feeders.randomUserFeeder(userCount))
     .feed(Feeders.randomUserFeeder(adminCount, isAdmin =  true, propertyName = "adminUserName"))
     .feed(Feeders.randomObjectTitleFromJson(itemType, "itemType"))
+    .feed(Feeders.randomObjectTitleFromJson(itemAgency, "itemAgency"))
   //  .feed(Feeders.randomObjectTitleFromJson(contactTypes, "itemContactType"))
     .feed(Feeders.randomObjectTitleFromJson(itemCategory, "itemCategory"))
   //  .feed(Feeders.emailFeeder("contactEmail"))

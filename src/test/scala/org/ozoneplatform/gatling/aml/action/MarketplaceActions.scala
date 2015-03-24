@@ -33,7 +33,7 @@ object MarketplaceActions {
       //.featuredBannerIconId("${featuredBannerIconId}")
       //.screenshots("${screenshots}")
       .whatIsNew("${itemWhatIsNew}")
-    //  .agency("${itemAgency}")
+      .agency("${itemAgency}")
       .addCategory("${itemCategory}")
     //  .addContact(new ContactBuilder()
      //   .contactType("${itemContactType}")
