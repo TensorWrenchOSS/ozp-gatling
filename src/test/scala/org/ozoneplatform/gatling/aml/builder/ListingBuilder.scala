@@ -44,11 +44,11 @@ class ListingBuilder(jsonIn: JsObject) {
 
   def agency(agency: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("agency" -> agency))
 
-  def approve(): ListingBuilder = new ListingBuilder(json ++ Json.obj("approvalStatus" -> "Approved", "isOutside" -> true))
+  def approve(): ListingBuilder = new ListingBuilder(json ++ Json.obj("approvalStatus" -> "APPROVED"))
 
   def orgApprove(): ListingBuilder = new ListingBuilder(json ++ Json.obj("approvalStatus" -> "APPROVED_ORG"))
 
-  def submit(): ListingBuilder = new ListingBuilder(json ++ Json.obj("approvalStatus" -> "Pending"))
+  def submit(): ListingBuilder = new ListingBuilder(json ++ Json.obj("approvalStatus" -> "PENDING"))
 
   def addContact(contact: ContactBuilder): ListingBuilder =
     new ListingBuilder(json ++ Json.obj("contacts" -> ((json \ "contacts").as[JsArray] :+ Json.parse(contact.toString))))
@@ -58,9 +58,6 @@ class ListingBuilder(jsonIn: JsObject) {
 
   def addScreenshot(screenshots: ScreenshotBuilder): ListingBuilder =
     new ListingBuilder(json ++ Json.obj("screenshots" -> Json.arr(Json.parse(screenshots.toString))))
-
-  //def addScreenshot(screenshots: ScreenshotBuilder): ListingBuilder =
-   // new ListingBuilder(json ++ Json.obj("screenshots" -> ((json \ "screenshots").as[JsArray] :+ Json.parse(screenshot.toString))))
 
   def tags(tags: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("tags" -> Json.arr(tags)))
 

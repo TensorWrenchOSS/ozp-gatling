@@ -60,10 +60,10 @@ class InitializeMarketplaceItems extends Simulation {
       exec(createImage("${userName}"))
     }
     .exec(createListing("${userName}"))
-   // .exec(submitListing)
-  //  .exec((session: Session) => { session.remove("gatling.http.cookies") }) //logout the user, so we can log in the admin
-  //  .exec(orgApproveListing)
-  //  .exec(approveListing)
+    .exec(submitListing)
+    .exec((session: Session) => { session.remove("gatling.http.cookies") }) //logout the user, so we can log in the admin
+    .exec(orgApproveListing)
+    .exec(approveListing)
 
   setUp(
     initServiceItems.inject(nothingFor(5 seconds), ramp(itemCount.toInt users) over (itemCount.toInt seconds))
