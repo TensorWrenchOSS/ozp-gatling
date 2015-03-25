@@ -2,7 +2,7 @@ package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.aml.builder.{CategoryBuilder, AgencyBuilder, ListingBuilder, TypeBuilder}
+import org.ozoneplatform.gatling.aml.builder.{ContactTypeBuilder, CategoryBuilder, AgencyBuilder, ListingBuilder, TypeBuilder}
 import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import bootstrap._
@@ -32,8 +32,16 @@ object MetaDataActions {
     .post("api/agency")
     .headers(ActionHelpers.restApiHeaders)
     .body(StringBody(new AgencyBuilder()
-      .title("${agencyTitle")
-      .shortName("${agencyShortName")
+      .title("${agencyTitle}")
+      .shortName("${agencyShortName}")
       .toString()))
     .basicAuth("testAdmin1", "password")
+
+  def createContactType: ActionBuilder = http("Create a contact type in the system")
+    .post("api/contactType")
+    .headers(ActionHelpers.restApiHeaders)
+    .body(StringBody(new ContactTypeBuilder() 
+      .title("${contactTypeTitle}")
+      .toString()))
+    .basicAuth("${adminUserName}", "password")
 }
