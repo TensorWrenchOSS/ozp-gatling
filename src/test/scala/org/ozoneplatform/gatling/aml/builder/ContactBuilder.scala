@@ -16,8 +16,6 @@ class ContactBuilder(jsonIn: JsObject) {
     )
   }
 
-  //def contactType(contactType: String): ContactBuilder = new ContactBuilder(json ++ Json.obj("type" -> Json.obj("type" -> contactType)))
-
   def contactType(contactType: String): ContactBuilder = new ContactBuilder(json ++ Json.obj("type" -> contactType))
 
   def name(name: String): ContactBuilder = new ContactBuilder(json ++ Json.obj("name" -> name))

@@ -25,4 +25,7 @@ object ActionHelpers {
   val setUIRelatedHeaders = Map("Content-Type" -> "application/json")
 
   val owfRelatedHeaders = Map("Content-Type" -> "application/json")
+
+  val imageHeaders = Map("Content-Type" -> "image/png")
 }
+

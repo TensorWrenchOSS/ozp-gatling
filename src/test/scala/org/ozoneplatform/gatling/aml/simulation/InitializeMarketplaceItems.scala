@@ -45,11 +45,6 @@ class InitializeMarketplaceItems extends Simulation {
     .feed(Feeders.blurbFeeder(100, "itemDescriptionShort"))
     .feed(Feeders.blurbFeeder(2, "itemVersionName"))
     .feed(Feeders.blurbFeeder(500, "itemRequirements"))
-    //.feed(Feeders).smallIconId
-    //.feed(Feeders).largeIconId
-    //.feed(Feeders).bannerIconId
-    //.feed(Feeders).featuredBannerIconId
-    //.feed(Feeders).screenshots
     .feed(Feeders.wordListFeeder(propertyName = "itemTitle"))
     .feed(Feeders.blurbFeeder(100, "itemWhatIsNew"))
     .feed(Feeders.randomUserFeeder(userCount))
@@ -61,6 +56,9 @@ class InitializeMarketplaceItems extends Simulation {
     .feed(Feeders.emailFeeder("contactEmail"))
     .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
     .feed(Feeders.blurbFeeder(15, "itemTag"))
+    .repeat(6) {
+      exec(createImage("${userName}"))
+    }
     .exec(createListing("${userName}"))
    // .exec(submitListing)
   //  .exec((session: Session) => { session.remove("gatling.http.cookies") }) //logout the user, so we can log in the admin

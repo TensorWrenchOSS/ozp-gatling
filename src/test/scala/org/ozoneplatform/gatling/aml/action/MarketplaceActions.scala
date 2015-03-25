@@ -2,7 +2,7 @@ package org.ozoneplatform.gatling.aml.action
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import org.ozoneplatform.gatling.aml.builder.{SearchBuilder, ContactBuilder, ListingBuilder}
+import org.ozoneplatform.gatling.aml.builder.{SearchBuilder, ContactBuilder, ScreenshotBuilder, ListingBuilder}
 import io.gatling.core.action.builder.ActionBuilder
 import play.api.libs.json.{JsObject, Json}
 import bootstrap._
@@ -11,10 +11,18 @@ import scala.concurrent.duration._
 import io.gatling.http.request.builder.PostHttpRequestBuilder
 
 object MarketplaceActions {
+
   def createUser: ActionBuilder = http("Login and create a profile by making a simple request")
     .get("api/listing")
     .headers(ActionHelpers.restApiHeaders)
     .basicAuth("${userName}", "password")
+
+  def createImage(userName: String): ActionBuilder = http("Upload image for Icons and screenshots")
+    .post("api/image")
+    .headers(ActionHelpers.imageHeaders)
+    .body(ELFileBody("PlaceholderIconSmall.png"))
+    .basicAuth(userName, "password") 
+    .check(jsonPath("$").saveAs("image"), jsonPath("$.id").saveAs("imageId"))
 
   def createListing(userName: String): ActionBuilder = http("Create a listing")
     .post("api/listing")
@@ -27,10 +35,10 @@ object MarketplaceActions {
       .versionName("${itemVersionName}")
       .requirements("${itemRequirements}")
       .tags("${itemTag}")
-      //.smallIconId("${smallIconId}")
-      //.largeIconId("${largeIconId}")
-      //.bannerIconId("${bannerIconId}")
-      //.featuredBannerIconId("${featuredBannerIconId}")
+      .smallIconId("${imageId}")
+      .largeIconId("${imageId}")
+      .bannerIconId("${imageId}")
+      .featuredBannerIconId("${imageId}")
       //.screenshots("${screenshots}")
       .whatIsNew("${itemWhatIsNew}")
       .agency("${itemAgency}")
@@ -40,6 +48,9 @@ object MarketplaceActions {
         .email("${contactEmail}")
         .securePhone("111-1111")
         .name("${contactName}"))
+     .addScreenshot(new ScreenshotBuilder()
+        .smallImageId("${imageId}")
+        .largeImageId("${imageId}"))
       .toString()))
     .basicAuth(userName, "password")
     .check(jsonPath("$").saveAs("listing"), jsonPath("$.id").saveAs("listingId"))

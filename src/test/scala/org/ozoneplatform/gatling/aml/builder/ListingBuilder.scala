@@ -9,11 +9,8 @@ class ListingBuilder(jsonIn: JsObject) {
   def this() {
     this(Json.obj(
       "launchUrl" -> "https://",
- //     "imageLargeUrl" -> "https://",
- //     "imageSmallUrl" -> "https://",
       "contacts" -> Json.arr(),
       "categories" -> Json.arr()
-   //   "tags" -> Json.arr()
     ))
   }
 
@@ -33,11 +30,13 @@ class ListingBuilder(jsonIn: JsObject) {
 
   def versionName(versionName: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("versionName" -> versionName))
 
-  //def smallIconId
-  //def largeIconId
-  //def bannerIconId
-  //def featuredBannerIconId
-  //def screenshots
+  def smallIconId(smallIconId: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("smallIconId" -> smallIconId))
+
+  def largeIconId(largeIconId: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("largeIconId" -> largeIconId))
+
+  def bannerIconId(bannerIconId: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("bannerIconId" -> bannerIconId))
+
+  def featuredBannerIconId(featuredBannerIconId: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("featuredBannerIconId" -> featuredBannerIconId))
 
   def requirements(requirements: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("requirements" -> requirements))
 
@@ -56,6 +55,12 @@ class ListingBuilder(jsonIn: JsObject) {
 
   def addCategory(categories: String): ListingBuilder =
     new ListingBuilder(json ++ Json.obj("categories" -> Json.arr(categories)))
+
+  def addScreenshot(screenshots: ScreenshotBuilder): ListingBuilder =
+    new ListingBuilder(json ++ Json.obj("screenshots" -> Json.arr(screenshots.toString)))
+
+  //def addScreenshot(screenshots: ScreenshotBuilder): ListingBuilder =
+   // new ListingBuilder(json ++ Json.obj("screenshots" -> ((json \ "screenshots").as[JsArray] :+ Json.parse(screenshot.toString))))
 
   def tags(tags: String): ListingBuilder = new ListingBuilder(json ++ Json.obj("tags" -> Json.arr(tags)))
 
