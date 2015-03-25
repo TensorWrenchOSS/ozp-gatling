@@ -57,7 +57,7 @@ class ListingBuilder(jsonIn: JsObject) {
     new ListingBuilder(json ++ Json.obj("categories" -> Json.arr(categories)))
 
   def addScreenshot(screenshots: ScreenshotBuilder): ListingBuilder =
-    new ListingBuilder(json ++ Json.obj("screenshots" -> Json.arr(screenshots.toString)))
+    new ListingBuilder(json ++ Json.obj("screenshots" -> Json.arr(Json.parse(screenshots.toString))))
 
   //def addScreenshot(screenshots: ScreenshotBuilder): ListingBuilder =
    // new ListingBuilder(json ++ Json.obj("screenshots" -> ((json \ "screenshots").as[JsArray] :+ Json.parse(screenshot.toString))))
