@@ -1,5 +1,4 @@
 *.iml
 .idea/*
 target/*
-
-src/test/resources/logback-test.xml
+logback-test.xml
