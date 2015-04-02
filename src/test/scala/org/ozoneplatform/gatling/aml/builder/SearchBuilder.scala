@@ -14,10 +14,10 @@ class SearchBuilder(requestIn: GetHttpRequestBuilder) {
   def this() {
     this(
       http("Make a search request")
-        .get("api/search")
+        .get("api/listing/search")
         .headers(ActionHelpers.searchHeaders)
         .check(jsonPath("$").transform(_.map(jsonString => {
-          val results = (Json.parse(jsonString) \ "data").as[Array[JsObject]]
+          val results = (Json.parse(jsonString) \ "_embedded" \ "item").as[Array[JsObject]]
           results map (item => (item \ "id").toString)
         })).saveAs("searchResults"))
     )

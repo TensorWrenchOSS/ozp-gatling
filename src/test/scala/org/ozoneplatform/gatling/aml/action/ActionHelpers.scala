@@ -16,7 +16,8 @@ object ActionHelpers {
                            "Connection" -> "keep-alive")
 
   val searchHeaders = Map("Content-Type" -> "application/json",
-                          "Connection" -> "keep-alive")
+                          "Connection" -> "keep-alive",
+                          "Authorization" -> "Basic VXNlcjg6cGFzc3dvcmQ=")
 
   val configHeaders = Map("Content-Type" -> "text/html")
 

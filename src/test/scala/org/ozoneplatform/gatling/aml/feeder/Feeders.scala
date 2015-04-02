@@ -83,7 +83,7 @@ object Feeders {
    */
   def selectAdminUserFeeder(storeUsersAsJson: String, propertyName: String = "userName"): Feeder[String] =
     new Feeder[String] {
-      val storeUsers = filterAdminUsers((Json.parse(storeUsersAsJson) \ "data").as[Array[JsObject]])
+      val storeUsers = filterAdminUsers((Json.parse(storeUsersAsJson) \ "_embedded" \ "item").as[Array[JsObject]])
 
       override def hasNext = true
 
@@ -99,7 +99,7 @@ object Feeders {
    */
   def selectUserNameFeeder(storeUsersAsJson: String, propertyName: String = "userName"): Feeder[String] =
     new Feeder[String] {
-      val storeUsers = (Json.parse(storeUsersAsJson) \ "data").as[Array[JsObject]]
+      val storeUsers = (Json.parse(storeUsersAsJson) \ "_embedded" \ "item").as[Array[JsObject]]
 
       override def hasNext = true
 

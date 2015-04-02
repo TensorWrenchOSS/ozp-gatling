@@ -11,7 +11,7 @@ import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import io.gatling.core.action.builder.ActionBuilder
 import io.gatling.core.structure.ChainBuilder
 import scala.util.Random
-/* 
+ 
 class MarketplaceBasicScenario extends Simulation {
   val userCount = getUserCount.toInt
   val userLoops = getScenarioUserCount.toInt
@@ -38,12 +38,13 @@ class MarketplaceBasicScenario extends Simulation {
   }
 
   def getSearchChain(searchAction: ActionBuilder): ChainBuilder = {
-    exec(getConfig)
-    .exec(setSearchResultUI)
-    .exec(getAffiliatedMarketplaces)
-    .exec(searchAction)
+   // exec(getConfig)
+   // .exec(setSearchResultUI)
+   // .exec(getAffiliatedMarketplaces)
+    exec(searchAction)
   }
 
+ 
   //filter search results up to 3 times
   //TODO: handle choosing an actual filter to apply - for now, just repeat the same search
   def getFilterChain(searchChain: ChainBuilder): ChainBuilder = {
@@ -58,22 +59,24 @@ class MarketplaceBasicScenario extends Simulation {
           .exec(searchChain))))
   }
 
+
     val reviewChain = {
     feed(Feeders.blurbFeeder(propertyName = "itemComment"))
     .feed(Feeders.itemRatingFeeder())
     .pause(1 minutes, 3 minutes) //pause to compose the review
-    .exec(reviewServiceItem)
+    .exec(reviewListing)
   }
 
-  val tagChain = {
+ /* val tagChain = {
     feed(Feeders.wordFeeder(propertyName = "itemTag"))
     .pause(3 seconds, 8 seconds) //pause to choose tag
     .exec(tagServiceItem)
-  }
+  }*/
 
   val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
     .feed(Feeders.randomUserFeeder(userCount))
-    //.exec(goToShoppePage)
+    .exec(goToHUD)
+    .exec(goToDiscoveryPage)
     .repeat(10) {
       pause(1 seconds, 5 seconds) //pause to choose search method/query
       .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
@@ -82,9 +85,9 @@ class MarketplaceBasicScenario extends Simulation {
         .exec(getSearchItemAndDoChain(randomSwitch(
           //can't do fractions of a percent with randomSwitch, hence the nesting
           1 -> exec(randomSwitch(25 -> reviewChain)),
-          1 -> exec(randomSwitch(50 -> tagChain)),
-          1 -> exec(randomSwitch(50 -> exec(addToOwf)))
-        )))
+  //        1 -> exec(randomSwitch(50 -> tagChain)),
+          1 -> exec(randomSwitch(50 -> exec(addBookmark)))
+       )))
       }
     }
 
@@ -96,4 +99,3 @@ class MarketplaceBasicScenario extends Simulation {
   ).protocols(restHttpProtocol)
 
 }
-*/

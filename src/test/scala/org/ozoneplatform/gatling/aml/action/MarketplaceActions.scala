@@ -13,7 +13,7 @@ import io.gatling.http.request.builder.PostHttpRequestBuilder
 object MarketplaceActions {
 
   def createUser: ActionBuilder = http("Login and create a profile by making a simple request")
-    .get("api/listing")
+    .get("api/profile/self")
     .headers(ActionHelpers.restApiHeaders)
     .basicAuth("${userName}", "password")
 
@@ -62,28 +62,12 @@ object MarketplaceActions {
     .basicAuth(userName, "password")
     .check(jsonPath("$").saveAs("listing"), jsonPath("$.id").saveAs("listingId"))
 
- /* def tagServiceItem: ActionBuilder = http("Tag a service item")
-    .post("api/serviceItem/" + "${serviceItemId}" + "/tag")
-    .headers(ActionHelpers.restApiHeaders)
-    .body(StringBody("[{\"title\": \"" +  "${itemTag}" + "\"}]"))
-    .basicAuth("${userName}", "password")
-
-
-  def reviewServiceItem: ActionBuilder = http("Post a review on a serviceItem")
-    //This is the legacy form based request which is still used in the quick view
-    .post("itemComment/saveItemComment")
+  def reviewListing: ActionBuilder = http("Post a review on a listing")
     //This is the REST API which is not being used yet
-    //.post("api/serviceItem/" + "${serviceItemId}" + "/itemComment")
-    //.headers(ActionHelpers.restApiHeaders)
+    .post("api/listing/" + "${listingId}" + "/itemComment")
+    .headers(ActionHelpers.restApiHeaders)
     //This is the request body for the REST API - not in use yet
-    //.body(StringBody("{\"text\": \"" + "${itemComment}" + "\", \"rate\": " + "${itemRating}" + "}"))
-    //The following queryParams can be removed when we switch to the REST API
-    .queryParam("commentTextInput", "${itemComment}")
-    .queryParam("serviceItemId", "${serviceItemId}")
-    .queryParam("text", "${itemComment}")
-    .queryParam("userRate", "${itemRating}")
-    .queryParam("newUserRating", "${itemRating}")
-    .queryParam("accessAlertShown", "true")
+    .body(StringBody("{\"text\": \"" + "${itemComment}" + "\", \"rate\": " + "${itemRating}" + "}"))
     .basicAuth("${userName}", "password")
 
   def getAffiliatedMarketplaces: ActionBuilder =
@@ -94,22 +78,28 @@ object MarketplaceActions {
       .queryParam("accessAlertShown", "true")
       .basicAuth("${userName}", "password")
 
-  def goToShoppePage: ChainBuilder =
-    group("Go to the Shoppe Page") {
-      exec(http("Request for Shoppe Page")
-        .get("/")
-        .queryParam("accessAlertShown", "true")
-        .basicAuth("${userName}", "password"))
-      .exec(getConfig)
-    }
-
   def goToDiscoveryPage: ChainBuilder =
     group("Go to the Discovery Page") {
-      exec(http("Request for discovery page")
-        .get("spa/")
+      exec(http("Request for Discovery Page")
+        .get("https://10.10.16.18:8443/center/#/home")
+       // .queryParam("accessAlertShown", "true")
         .basicAuth("${userName}", "password"))
-      .exec(getConfig)
-      .exec(getAffiliatedMarketplaces)
+      .exec(getMetadata)
+      .exec(getStorefront)
+      .exec(getProfileSelf)
+      .exec(getNotifications)
+      .exec(getLibrary)
+    }
+
+    def goToHUD: ChainBuilder =
+    group("Go to the HUD") {
+      exec(http("Request for HUD")
+        .get("https://10.10.16.18:8443/hud/#/home")
+       // .queryParam("accessAlertShown", "true")
+        .basicAuth("${userName}", "password"))
+      .exec(getProfileSelf)
+      .exec(getNotifications)
+      .exec(getLibrary)
     }
 
   def setSearchResultUI: ActionBuilder =
@@ -120,13 +110,50 @@ object MarketplaceActions {
       .param("viewGridOrList", "grid")
       .basicAuth("${userName}", "password")
 
-  def addToOwf: ActionBuilder =
+  def getProfileSelf: ActionBuilder = 
+    http("Get profile for self")
+      .get("api/profile/self")
+      .headers(ActionHelpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getLibrary: ActionBuilder = 
+    http("Get library for self")
+      .get("api/profile/self/library")
+      .headers(ActionHelpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+ def getNotifications: ActionBuilder = 
+    http("Get notifications for self")
+      .get("api/profile/self/notification")
+      .headers(ActionHelpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getStorefront: ActionBuilder = 
+    http("Get storefront - Featured/New Arrivals/Most Popular")
+      .get("api/storefront")
+      .headers(ActionHelpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def getMetadata: ActionBuilder = 
+    http("Get Metadata - Types/Categories/Organizations")
+      .get("api/metadata")
+      .headers(ActionHelpers.restApiHeaders)
+      .basicAuth("${userName}", "password")
+
+  def addBookmark: ActionBuilder = 
+    http("Add a listing as a bookmark")
+      .post("api/profile/self/library")
+      .headers(ActionHelpers.restApiHeaders)
+      .body(StringBody("{\"folder\": null, \"listing\": {\"id\": " +  "${listingId}" + "}}"))
+      .basicAuth("${userName}", "password")
+  
+/*  def addToOwf: ActionBuilder =
     http("Add Listing to Owf")
       .post("relationship/getOWFRequiredItems")
       .headers(ActionHelpers.owfRelatedHeaders)
       .param("accessAlertShown", "true")
       .param("id", "${serviceItemId}")
-      .basicAuth("${userName}", "password")
+      .basicAuth("${userName}", "password") */
 
   def getConfig: ActionBuilder =
     http("Request config.js")
@@ -150,31 +177,31 @@ object MarketplaceActions {
         val results = session("searchResults").as[Array[String]]
         val firstListingId = results.head
 
-        session.set("serviceItemId", firstListingId).set("searchResults", results.tail)
+        session.set("listingId", firstListingId).set("searchResults", results.tail)
       })
         .group("Quick View") {
-        serviceItemGroupUser
+        listingGroupUser
       }
         .pause(30 seconds, 1 minutes) //pause to review the item
         .exec(chain)
     }
 
-  def serviceItemGroupUser: ChainBuilder =
-    exec(getServiceItem)
+  def listingGroupUser: ChainBuilder =
+    exec(getListing)
       .exec(getRequiredItems)
       .exec(getRequiringItems)
       .exec(getItemComments)
-      .exec(getItemTags)
+     // .exec(getItemTags)
 
-  def getServiceItem: ActionBuilder =
-    http("Request a service item")
-      .get("public/serviceItem/" + "${serviceItemId}")
+  def getListing: ActionBuilder =
+    http("Request a listing")
+      .get("api/listing/" + "${listingId}")
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
   def getItemActivities: ActionBuilder =
-    http("Request Item Activities")
-      .get("api/serviceItem/" + "${serviceItemId}" + "/activity")
+    http("Request Listing Activities")
+      .get("api/listing/" + "${listingId}" + "/activity")
       .queryParam("max", "24")
       .queryParam("offset", "0")
       .queryParam("sort", "activityDate")
@@ -183,40 +210,40 @@ object MarketplaceActions {
       .basicAuth("${userName}", "password")
 
   def getRequiredItems: ActionBuilder =
-    http("Get Required Items")
-      .get("api/serviceItem/" + "${serviceItemId}" + "/requiredServiceItems")
+    http("Get Required Listings")
+      .get("api/listing/" + "${listingId}" + "/requiredListings")
       .queryParam("accessAlertShown", "true")
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
   def getRequiringItems: ActionBuilder =
-    http("Get Requiring Items")
-      .get("api/serviceItem/" + "${serviceItemId}" + "/requiringServiceItems")
+    http("Get Requiring Listings")
+      .get("api/listing/" + "${listingId}" + "/requiringListings")
       .queryParam("accessAlertShown", "true")
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
-  def getScoreCardResponses: ActionBuilder =
+/*  def getScoreCardResponses: ActionBuilder =
     http("Get Scorecard Responses")
       .get("scoreCardItemResponse/scoreCardResponsesByServiceItem/" + "${serviceItemId}")
       .queryParam("accessAlertShown", "true")
       .headers(ActionHelpers.restApiHeaders)
-      .basicAuth("${userName}", "password")
+      .basicAuth("${userName}", "password")*/
 
   def getItemComments: ActionBuilder =
-    http("Get Item Comments")
-      .get("itemComment/commentsByServiceItem/" + "${serviceItemId}")
-      .queryParam("accessAlertShown", "true")
+    http("Get Listing Comments")
+      .get("api/listing/" + "${listingId}" + "/itemComment")
+     // .queryParam("accessAlertShown", "true")
       .headers(ActionHelpers.restApiHeaders)
       .basicAuth("${userName}", "password")
 
-  def getItemTags: ActionBuilder =
+/*  def getItemTags: ActionBuilder =
     http("Get Item Tags")
       .get("api/serviceItem/" + "${serviceItemId}" + "/tag")
       .headers(ActionHelpers.restApiHeaders)
-      .basicAuth("${userName}", "password")
+      .basicAuth("${userName}", "password") */
 
-  def createAdminTypeBase(url: String): PostHttpRequestBuilder =
+ /* def createAdminTypeBase(url: String): PostHttpRequestBuilder =
     http("Manage Admin Type: " + url)
       .post(url)
       .headers(ActionHelpers.adminTypeHeaders)
@@ -252,6 +279,6 @@ object MarketplaceActions {
 
   def createCategory: ActionBuilder =
     createAdminTypeBase("category/save")
-      .param("title", "${categoryTitle}")
-*/
+      .param("title", "${categoryTitle}") */
+
 }
