@@ -13,7 +13,8 @@ object ActionHelpers {
     .acceptHeader("application/json")
 
   val restApiHeaders = Map("Content-Type" -> "application/json",
-                           "Connection" -> "keep-alive")
+                           "Connection" -> "keep-alive",
+                           "Authorization" -> "Basic VXNlcjg6cGFzc3dvcmQ=")
 
   val searchHeaders = Map("Content-Type" -> "application/json",
                           "Connection" -> "keep-alive",

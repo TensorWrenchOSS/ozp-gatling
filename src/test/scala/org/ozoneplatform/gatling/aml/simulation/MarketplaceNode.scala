@@ -14,29 +14,29 @@ import scala.util.Random
 
 class MarketplaceNode extends Simulation {
 
-  val userLoops = getScenarioUserCount.toInt
-  val rampPeriod = getRampPeriod.toInt
+  // val userLoops = getScenarioUserCount.toInt
+  // val rampPeriod = getRampPeriod.toInt
 
-  val termSearch: ActionBuilder = new SearchBuilder().searchTerm("${queryString}").maxResults("24").search
+  // val termSearch: ActionBuilder = new SearchBuilder().searchTerm("${queryString}").maxResults("24").search
 
-  val searchForListings = {
-    val searchChain = getSearchChain(termSearch)
+  // val searchForListings = {
+  //   val searchChain = getSearchChain(termSearch)
 
-    feed(Feeders.wordListFeeder(propertyName = "queryString"))
-    .exec(searchChain)
-  }
+  //   feed(Feeders.wordListFeeder(propertyName = "queryString"))
+  //   .exec(searchChain)
+  // }
 
-  def getSearchChain(searchAction: ActionBuilder): ChainBuilder = exec(searchAction)
+  // def getSearchChain(searchAction: ActionBuilder): ChainBuilder = exec(searchAction)
 
-  val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
-    .repeat(50) {
-      pause(1 seconds, 5 seconds)
-      .exec(searchForListings)
-    }
+  // val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
+  //   .repeat(50) {
+  //     pause(1 seconds, 5 seconds)
+  //     .exec(searchForListings)
+  //   }
 
-  setUp(
-    basicUserScenario.inject(
-      ramp(userLoops users) over (rampPeriod seconds)
-    )
-  ).protocols(restHttpProtocol)
+  // setUp(
+  //   basicUserScenario.inject(
+  //     ramp(userLoops users) over (rampPeriod seconds)
+  //   )
+  // ).protocols(restHttpProtocol)
 }

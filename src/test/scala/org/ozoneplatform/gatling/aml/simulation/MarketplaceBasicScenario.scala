@@ -31,16 +31,12 @@ class MarketplaceBasicScenario extends Simulation {
 
   val searchForListings = {
     val searchChain = getSearchChain(termSearch)
-
     feed(Feeders.wordListFeeder(propertyName = "queryString"))
     .exec(searchChain)
     .exec(getFilterChain(searchChain))
   }
 
   def getSearchChain(searchAction: ActionBuilder): ChainBuilder = {
-   // exec(getConfig)
-   // .exec(setSearchResultUI)
-   // .exec(getAffiliatedMarketplaces)
     exec(searchAction)
   }
 
@@ -49,51 +45,37 @@ class MarketplaceBasicScenario extends Simulation {
   //TODO: handle choosing an actual filter to apply - for now, just repeat the same search
   def getFilterChain(searchChain: ChainBuilder): ChainBuilder = {
     randomSwitch(47 ->
-      pause(1 seconds, 5 seconds)
-      .exec(searchChain)
+      // pause(1 seconds, 5 seconds)
+      exec(searchChain)
       .randomSwitch(33 ->
-        pause(1 seconds, 5 seconds)
-        .exec(searchChain)
+        // pause(1 seconds, 5 seconds)
+        exec(searchChain)
         .randomSwitch(33 ->
-          pause(1 seconds, 5 seconds)
-          .exec(searchChain))))
+          // pause(1 seconds, 5 seconds)
+          exec(searchChain))))
   }
 
 
-    val reviewChain = {
+  val reviewChain = {
     feed(Feeders.blurbFeeder(propertyName = "itemComment"))
     .feed(Feeders.itemRatingFeeder())
-    .pause(1 minutes, 3 minutes) //pause to compose the review
+    // .pause(1 minutes, 3 minutes) //pause to compose the review
     .exec(reviewListing)
   }
 
- /* val tagChain = {
-    feed(Feeders.wordFeeder(propertyName = "itemTag"))
-    .pause(3 seconds, 8 seconds) //pause to choose tag
-    .exec(tagServiceItem)
-  }*/
+  val bookmarkChain = {
+    exec(addBookmark)
+  }
 
   val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
     .feed(Feeders.randomUserFeeder(userCount))
     .exec(goToHUD)
     .exec(goToDiscoveryPage)
-    .repeat(10) {
-      pause(1 seconds, 5 seconds) //pause to choose search method/query
-      .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
-      .repeat(5) {
-        pause(1 seconds, 5 seconds) //pause to scan and choose search result
-        .exec(getSearchItemAndDoChain(randomSwitch(
-          //can't do fractions of a percent with randomSwitch, hence the nesting
-          1 -> exec(randomSwitch(25 -> reviewChain)),
-  //        1 -> exec(randomSwitch(50 -> tagChain)),
-          1 -> exec(randomSwitch(50 -> exec(addBookmark)))
-       )))
-      }
-    }
+    .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
+    .exec(getSearchItemAndDoChain(randomSwitch(50 -> reviewChain, 50 -> bookmarkChain)))
 
   setUp(
     basicUserScenario.inject(
-      ramp(30 users) over (30 seconds),
       ramp(userLoops users) over (rampPeriod seconds)
     )
   ).protocols(restHttpProtocol)

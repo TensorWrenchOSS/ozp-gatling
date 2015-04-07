@@ -28,6 +28,6 @@ class InitializeMetaData extends Simulation {
     .exec(createContactType)
 
   setUp(
-    initMetaData.inject(nothingFor(5 seconds), ramp(1 users) over (5 seconds))
+    initMetaData.inject(nothingFor(5 seconds), ramp(itemCount.toInt users) over (itemCount.toInt seconds))
   ).protocols(restHttpProtocol)
 }

@@ -81,11 +81,11 @@ object MarketplaceActions {
   def goToDiscoveryPage: ChainBuilder =
     group("Go to the Discovery Page") {
       exec(http("Request for Discovery Page")
-        .get("https://10.10.16.18:8443/center/#/home")
+        .get("http://10.10.10.154:8000/dist/#/home")
        // .queryParam("accessAlertShown", "true")
         .basicAuth("${userName}", "password"))
-      .exec(getMetadata)
-      .exec(getStorefront)
+      // .exec(getMetadata)
+      // .exec(getStorefront)
       .exec(getProfileSelf)
       .exec(getNotifications)
       .exec(getLibrary)
@@ -94,7 +94,7 @@ object MarketplaceActions {
     def goToHUD: ChainBuilder =
     group("Go to the HUD") {
       exec(http("Request for HUD")
-        .get("https://10.10.16.18:8443/hud/#/home")
+        .get("http://10.10.10.154:8088/dist/#/")
        // .queryParam("accessAlertShown", "true")
         .basicAuth("${userName}", "password"))
       .exec(getProfileSelf)
