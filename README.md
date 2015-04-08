@@ -46,3 +46,15 @@ mvn clean test-compile gatling:execute -Dgatling.simulationClass=org.ozoneplatfo
 -DuserCount=5000 -> The number of users to create (they will be created in the form testUser1, testUser2, testUser3, etc)
 -DadminCount=500 -> The number of admins to create (they will be created in the form testAdmin1, testAdmin2, testAdmin3, etc)
 -DbaseUrl=http://localhost:8080/marketplace -> The url of the marketplace instance you're testing
+
+
+To generate the entire test scenario:
+
+mvn clean test-compile gatling:execute -Dgatling.simulationClass=org.ozoneplatform.gatling.aml.simulation.InitializePerformanceData -DuserCount=5000 -DadminCount=100 -DitemCount=300 -DmetaDataCount=30 -DbaseUrl=http://192.168.37.16:8080/marketplace
+-Dgatling.simulationClass=org.ozoneplatform.gatling.aml.simulation.InitializePerformanceData -> The fully qualified class of the scenario to run
+-DuserCount=5000 -> The number of users to create (they will be created in the form testUser1, testUser2, testUser3, etc)
+-DadminCount=100 -> The number of admins to create (they will be created in the form testAdmin1, testAdmin2, testAdmin3, etc)
+-DitemCount=300 -> The number of listings to create in the store
+-DmetaDataCount=30 -> The number of meta data objects to create in the store
+-DbaseUrl=http://localhost:8080/marketplace -> The url of the marketplace instance you're testing
+

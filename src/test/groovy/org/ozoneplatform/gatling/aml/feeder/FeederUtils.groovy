@@ -24,7 +24,7 @@ class FeederUtils {
 
     public static Integer getItemCount() { (System.properties.getProperty('itemCount') ?: '1') as Integer }
 
-    public static Integer getTagCount() { (System.properties.getProperty('tagCount') ?: '1000') as Integer }
+    public static Integer getMetaDataCount() { (System.properties.getProperty('metaDataCount') ?: '10') as Integer }
 
     public static Integer getActionPercentage() { (System.properties.getProperty('actionPercentage') ?: '5') as Integer }
 

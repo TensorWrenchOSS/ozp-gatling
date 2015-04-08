@@ -45,21 +45,21 @@ class MarketplaceBasicScenario extends Simulation {
   //TODO: handle choosing an actual filter to apply - for now, just repeat the same search
   def getFilterChain(searchChain: ChainBuilder): ChainBuilder = {
     randomSwitch(47 ->
-      // pause(1 seconds, 5 seconds)
-      exec(searchChain)
+      pause(1 seconds, 5 seconds)
+      .exec(searchChain)
       .randomSwitch(33 ->
-        // pause(1 seconds, 5 seconds)
-        exec(searchChain)
+        pause(1 seconds, 5 seconds)
+        .exec(searchChain)
         .randomSwitch(33 ->
-          // pause(1 seconds, 5 seconds)
-          exec(searchChain))))
+          pause(1 seconds, 5 seconds)
+          .exec(searchChain))))
   }
 
 
   val reviewChain = {
     feed(Feeders.blurbFeeder(propertyName = "itemComment"))
     .feed(Feeders.itemRatingFeeder())
-    // .pause(1 minutes, 3 minutes) //pause to compose the review
+    .pause(1 minutes, 3 minutes) //pause to compose the review
     .exec(reviewListing)
   }
 
@@ -71,8 +71,12 @@ class MarketplaceBasicScenario extends Simulation {
     .feed(Feeders.randomUserFeeder(userCount))
     .exec(goToHUD)
     .exec(goToDiscoveryPage)
-    .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
-    .exec(getSearchItemAndDoChain(randomSwitch(50 -> reviewChain, 50 -> bookmarkChain)))
+    .repeat(10){
+      pause(1 seconds, 5 seconds)
+      .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
+      .exec(getSearchItemAndDoChain(randomSwitch(1 -> reviewChain, 1 -> bookmarkChain)))
+    }
+      
 
   setUp(
     basicUserScenario.inject(
