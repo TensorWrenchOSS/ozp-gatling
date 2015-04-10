@@ -16,6 +16,9 @@ class InitializePerformanceData extends Simulation {
   val userCount = getUserCount.toInt
   val adminCount = getAdminCount.toInt
   val metaDataCount = getMetaDataCount.toInt
+  val userRamp = userCount / 10
+  val adminRamp = adminCount / 10
+  val itemRamp = itemCount / 5
   val itemType = getObjectDataAsJson(TYPE_PATH)
   val itemAgency = getObjectDataAsJson(AGENCY_PATH)
   val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
@@ -88,9 +91,9 @@ class InitializePerformanceData extends Simulation {
     .exec(approveListing)
 
   setUp(
-    initAdminUsers.inject(ramp(adminCount users) over (adminCount seconds)),
-    initUsers.inject(nothingFor(adminCount seconds), ramp(userCount users) over (userCount seconds)),
-    initMetaData.inject(nothingFor((adminCount + userCount) seconds), ramp(metaDataCount users) over (metaDataCount seconds)),
-    initServiceItems.inject(nothingFor((adminCount + userCount + metaDataCount) seconds), ramp(itemCount users) over (itemCount seconds))
+    initAdminUsers.inject(ramp(adminCount users) over (adminRamp seconds)),
+    initUsers.inject(nothingFor(adminRamp seconds), ramp(userCount users) over (userRamp seconds)),
+    initMetaData.inject(nothingFor((adminRamp + userRamp) seconds), ramp(metaDataCount users) over (metaDataCount seconds)),
+    initServiceItems.inject(nothingFor((adminRamp + userRamp + metaDataCount) seconds), ramp(itemCount users) over (itemRamp seconds))
   ).protocols(restHttpProtocol)
 }
