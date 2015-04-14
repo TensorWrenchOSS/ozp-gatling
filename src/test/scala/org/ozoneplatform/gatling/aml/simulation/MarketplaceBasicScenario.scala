@@ -7,6 +7,7 @@ import org.ozoneplatform.gatling.aml.feeder.FeederUtils._
 import bootstrap._
 import scala.concurrent.duration._
 import org.ozoneplatform.gatling.aml.builder.SearchBuilder
+import org.ozoneplatform.gatling.aml.builder.ListingBuilder
 import org.ozoneplatform.gatling.aml.action.ActionHelpers._
 import io.gatling.core.action.builder.ActionBuilder
 import io.gatling.core.structure.ChainBuilder
@@ -16,6 +17,10 @@ class MarketplaceBasicScenario extends Simulation {
   val userCount = getUserCount.toInt
   val userLoops = getScenarioUserCount.toInt
   val rampPeriod = getRampPeriod.toInt
+  val itemType = getObjectDataAsJson(TYPE_PATH)
+  val itemAgency = getObjectDataAsJson(AGENCY_PATH)
+  val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)
+  val itemCategory = getObjectDataAsJson(CATEGORY_PATH)
 
   val allListings: ActionBuilder = new SearchBuilder().allListings().maxResults("24").search
   val newArrivals: ActionBuilder = new SearchBuilder().newArrivals().maxResults("24").search
@@ -40,6 +45,12 @@ class MarketplaceBasicScenario extends Simulation {
     exec(searchAction)
   }
 
+  val submitListing = exec((session: Session) => {
+    val item = session("listing").as[String]
+    val itemJson = new ListingBuilder(item).submit().toString
+
+    session.set("listing", itemJson)
+  }).exec(modifyListing("${userName}"))
  
   //filter search results up to 3 times
   //TODO: handle choosing an actual filter to apply - for now, just repeat the same search
@@ -67,15 +78,42 @@ class MarketplaceBasicScenario extends Simulation {
     exec(addBookmark)
   }
 
+  def createListingChain: ChainBuilder = 
+    group("Create a listing") {
+      feed(Feeders.blurbFeeder(3000, "itemDescription"))
+      .feed(Feeders.blurbFeeder(100, "itemDescriptionShort"))
+      .feed(Feeders.blurbFeeder(2, "itemVersionName"))
+      .feed(Feeders.blurbFeeder(500, "itemRequirements"))
+      .feed(Feeders.wordListFeeder(propertyName = "itemTitle"))
+      .feed(Feeders.blurbFeeder(100, "itemWhatIsNew"))
+      .feed(Feeders.randomObjectTitleFromJson(itemType, "itemType"))
+      .feed(Feeders.randomObjectTitleFromJson(itemAgency, "itemAgency"))
+      .feed(Feeders.randomObjectTitleFromJson(contactTypes, "itemContactType"))
+      .feed(Feeders.randomObjectTitleFromJson(itemCategory, "itemCategory"))
+      .feed(Feeders.emailFeeder("contactEmail"))
+      .feed(Feeders.wordListFeeder(maxSize = 2, propertyName = "contactName"))
+      .feed(Feeders.blurbFeeder(15, "itemTag"))
+      .repeat(6) {
+        exec(createImage("${userName}"))
+      }
+      .exec(createListing("${userName}"))
+      .exec(submitListing)
+  }
+
   val basicUserScenario = scenario("Basic Marketplace Performance Scenario")
     .feed(Feeders.randomUserFeeder(userCount))
     .exec(goToHUD)
     .exec(goToDiscoveryPage)
-    .repeat(10){
-      pause(1 seconds, 5 seconds)
-      .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
-      .exec(getSearchItemAndDoChain(randomSwitch(1 -> reviewChain, 1 -> bookmarkChain)))
-    }
+    .randomSwitch(1 -> createListingChain, 99 ->
+      repeat(10){
+        pause(1 seconds, 5 seconds)
+        .randomSwitch(52 -> browseForListings, 48 -> searchForListings)
+        .repeat(5){
+          pause(1 seconds, 5 seconds)
+          .exec(getSearchItemAndDoChain(randomSwitch(1 -> reviewChain, 10 -> bookmarkChain)))
+        }
+      }
+    )
       
 
   setUp(

@@ -18,7 +18,7 @@ class InitializePerformanceData extends Simulation {
   val metaDataCount = getMetaDataCount.toInt
   val userRamp = userCount / 10
   val adminRamp = adminCount / 10
-  val itemRamp = itemCount / 5
+  val itemRamp = itemCount
   val itemType = getObjectDataAsJson(TYPE_PATH)
   val itemAgency = getObjectDataAsJson(AGENCY_PATH)
   val contactTypes = getObjectDataAsJson(CONTACT_TYPE_PATH)

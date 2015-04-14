@@ -17,7 +17,7 @@ object MarketplaceActions {
     .headers(ActionHelpers.restApiHeaders)
     .basicAuth("${userName}", "password")
 
-  def createImage(userName: String): ActionBuilder = http("Upload image for Icons and screenshots")
+  def createImage(userName: String): ActionBuilder = http("Upload image")
     .post("api/image")
     .headers(ActionHelpers.imageHeaders)
     .body(ELFileBody("PlaceholderIconSmall.png"))
