@@ -80,7 +80,8 @@ class MarketplaceBasicScenario extends Simulation {
 
   def createListingChain: ChainBuilder = 
     group("Create a listing") {
-      feed(Feeders.blurbFeeder(3000, "itemDescription"))
+      pause(3 minutes, 5 minutes)
+      .feed(Feeders.blurbFeeder(3000, "itemDescription"))
       .feed(Feeders.blurbFeeder(100, "itemDescriptionShort"))
       .feed(Feeders.blurbFeeder(2, "itemVersionName"))
       .feed(Feeders.blurbFeeder(500, "itemRequirements"))
